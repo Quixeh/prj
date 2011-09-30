@@ -1,6 +1,7 @@
 /** Initial Controller Test Code
 *
 * @author Andy Blackmore <axb803@bham.ac.uk>
+* Base code taken from the ALP High-Speed API Sample.
 *
 */
 
@@ -8,11 +9,15 @@
 #include <windows.h>
 #include <conio.h>
 #include <stdio.h>
+#include <iostream>
+#include <string>
 #include "../inc/alp.h"
 
-int main(){
+using namespace std;
 
-	ALP_ID nDevId, nSeqId;
+int main(){
+	
+    ALP_ID nDevId, nSeqId;
 	long nDmdType, nSizeX, nSizeY;
 	long nReturn;
 	const long nPictureTime = 20000;	// 20 ms, i.e. 50 Hz frame rate
@@ -22,30 +27,32 @@ int main(){
 	// Allocate the ALP high-speed device
 	// We do this by testing if the device returns ok or not.
 
-	string alpState = AlpDevAlloc(ALP_DEFAULT, ALP_DEFAULT, &nDevId);
+	long alpState = AlpDevAlloc(ALP_DEFAULT, ALP_DEFAULT, &nDevId);
  	
 	if (ALP_OK != alpState){
-		cout >> "Error 1: Device Returned non-OK value: " >> alpState >> endl;
+		cout << "Error 1: Device Returned non-OK value: " << alpState << endl;
 		return 1;
 	}
 
 	// Inquire DMD type
 	alpState = AlpDevInquire(nDevId, ALP_DEV_DMDTYPE, &nDmdType );
 	if (ALP_OK != alpState){
-		cout >> "Error 2: Device Returned non-OK value: " >> alpState >> endl; 
+		cout << "Error 2: Device Returned non-OK value: " << alpState << endl; 
+		int x;
+		cin >> x;
 		return 1;
 	}
 
 	switch (nDmdType) {
 		case ALP_DMDTYPE_DISCONNECT: // no DMD attached
 			debugMode = 1;
-			cout >> "DMD Disconnected - Entering debugMode" >> endl;
+			cout << "DMD Disconnected - Entering debugMode" << endl;
 		case ALP_DMDTYPE_1080P_095A : // 1080p attached
 			nSizeX = 1920; nSizeY = 1080;
-			cout >> "Using 1080p DMD - Device ID: " >> nDevId >> endl;
+			cout << "Using 1080p DMD - Device ID: " << nDevId << endl;
 			break; 
 		default: // unsupported DMD type
-			cout >> "Unsupported DMD - Exiting" >> endl;
+			cout << "Unsupported DMD - Exiting" << endl;
 			return 1;
 	}
 
