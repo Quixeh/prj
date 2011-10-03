@@ -60,7 +60,7 @@ int main(){
 	if (ALP_OK != AlpSeqAlloc( nDevId, 1, 2, &nSeqId )) return 1;
 
 	// Create images
-	pImageData = (UCHAR*) malloc( 2*nSizeX*nSizeY );
+	pImageData = (UCHAR*) malloc( 2*nSizeX*nSizeY ); // UCHAR array of 2 images' worth of pixels.
 	if (NULL == pImageData) return 1;
 	FillMemory( pImageData, nSizeX*nSizeY, 0x80 );				// white
 	FillMemory( pImageData+nSizeX*nSizeY, nSizeX*nSizeY, 0x00 );		// black
