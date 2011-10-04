@@ -35,6 +35,6 @@ int PxGrp::getValue(){
 	return value;
 }
 
-void PxGrp::setValue(int svalue){
-	value = svalue;
+void PxGrp::setValue(int sValue){
+	value = sValue;
 }

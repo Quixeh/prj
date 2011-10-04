@@ -18,7 +18,7 @@ using namespace std;
 
 int main(){
 	cout << "Creating View." << endl;
-	View view(40);
+	View view(10);
 	
 	cout << "Applying Fn to View." << endl;
 	view.applyXfn();
@@ -26,3 +26,4 @@ int main(){
 	cout << "Creating Output." << endl;
 	view.output();
 }
+

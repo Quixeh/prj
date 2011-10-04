@@ -113,6 +113,7 @@ namespace intarray2bmp
     f << lwrite( 0,                              4 );  // biClrImportant
 
     // Write the pixel data
+    std::cout << min_value << " " << max_value << std::endl;
     for (unsigned row = rows; row; row--)           // bottom-to-top
       {
       for (unsigned col = 0; col < columns; col++)  // left-to-right
@@ -128,18 +129,12 @@ namespace intarray2bmp
         // The following algorithm takes a few shortcuts since
         // both 'value' and 'saturation' are always 1.0.
         //
-        double hue = (intarray[ row - 1 ][ col ] - min_value) * granularity;
-        int    H = (int)( hue / 60 ) % 6;
-        double F = (hue / 60) - H;
-        double Q = 1.0 - F;
-
-        #define c( x ) (255 * x)
-        switch (H)
-          {
-          case 0:  red = c(0);  green = c(0);  blue = c(0);  break;
-          default: red = c(1);  green = c(1);  blue = c(1);
-          }
-        #undef c
+        
+        double val = 255 * ((intarray[ row-1][ col] - min_value) / double(max_value));
+        red = int(val);
+        green = int(val);
+        blue = int(val);
+        std::cout << row-1 << " " << col <<  " " << intarray[row-1][col] << " " << int(val) << std::endl;
 
         f.put( static_cast <char> (blue)  )
          .put( static_cast <char> (green) )
