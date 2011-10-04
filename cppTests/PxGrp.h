@@ -6,10 +6,12 @@
 
 class PxGrp {
 	private:
-		int value;
-		int data[5][5];
+		int value, size;
+		int** data;
+		
 	public:
 		PxGrp ();
+		void setPxSize(int);
 		int getValue();
 		void setValue(int);	
 };
@@ -17,6 +19,16 @@ class PxGrp {
 PxGrp::PxGrp (){
 	// Construct here.
 	value = 0;
+}
+
+void PxGrp::setPxSize(int setSize){
+	size = setSize;
+	data = new int*[size];
+	
+	for (int i=0; i<size; i++){
+		data[i] = new int[size];
+	}
+
 }
 
 int PxGrp::getValue(){

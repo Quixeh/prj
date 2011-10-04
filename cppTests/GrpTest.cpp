@@ -17,7 +17,12 @@
 using namespace std;
 
 int main(){
-	View view;
-	view.randomise();
+	cout << "Creating View." << endl;
+	View view(40);
+	
+	cout << "Applying Fn to View." << endl;
+	view.applyXfn();
+
+	cout << "Creating Output." << endl;
 	view.output();
 }
