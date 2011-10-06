@@ -1,0 +1,30 @@
+# Project: sdl13
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = sdl13.o $(RES)
+LINKOBJ  = sdl13.o $(RES)
+LIBS =  -L"E:/Programs/DevCPP/App/devcpp/lib" -L"E:/prj/sdlTests/1.3/lib" -L"E:/prj/sdlTests/1.3/lib" -mwindows -lmingw32 -lSDLmain -lSDL  
+INCS =  -I"E:/Programs/DevCPP/App/devcpp/include"  -I"E:/prj/sdlTests/1.3/include" 
+CXXINCS =  -I"E:/Programs/DevCPP/App/devcpp/lib/gcc/mingw32/3.4.2/include"  -I"E:/Programs/DevCPP/App/devcpp/include/c++/3.4.2/backward"  -I"E:/Programs/DevCPP/App/devcpp/include/c++/3.4.2/mingw32"  -I"E:/Programs/DevCPP/App/devcpp/include/c++/3.4.2"  -I"E:/Programs/DevCPP/App/devcpp/include"  -I"E:/prj/sdlTests/1.3/include"  -I"E:/prj/sdlTests/1.3/include" 
+BIN  = sdl13.exe
+CXXFLAGS = $(CXXINCS)  
+CFLAGS = $(INCS)  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before sdl13.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "sdl13.exe" $(LIBS)
+
+sdl13.o: sdl13.cpp
+	$(CPP) -c sdl13.cpp -o sdl13.o $(CXXFLAGS)
