@@ -5,16 +5,6 @@
 
 using namespace std;
 
-Uint32 gPixel( SDL_Surface *surface, int x, int y ){
-    Uint32 *pixels = (Uint32 *)surface->pixels;
-    return pixels[ ( y * surface->w ) + x ];
-}
-
-void sPixel( SDL_Surface *surface, int x, int y, Uint32 pixel ){
-    Uint32 *pixels = (Uint32 *)surface->pixels;
-    pixels[ ( y * surface->w ) + x ] = pixel;
-}
-
 int main( int argc, char* args[] )
 {
     // Start SDL
@@ -23,7 +13,7 @@ int main( int argc, char* args[] )
     // Windows
     SDL_WindowID wCtrl, wDisp;
     wCtrl = SDL_CreateWindow("SLM Control Panel",100,100,230,600,SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
-    wDisp = SDL_CreateWindow("DMD Display",500,100,200,200,SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
+    wDisp = SDL_CreateWindow("DMD Display",500,100,200,200,SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL);
     
     // Renderers
     SDL_Renderer *rCtrl, *rDisp;
@@ -35,9 +25,10 @@ int main( int argc, char* args[] )
     tCtrl = SDL_CreateTexture(rCtrl, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, 50, 50);
     tDisp = SDL_CreateTexture(rDisp, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, 50, 50);
     
-    Uint32 *pix;
-    void *pixels;
-    int pitch;
+    // Define Pixel Manipulation Vars
+    Uint32 *pix; // Current Working Pixel
+    void *pixels; // Pixels to work upon - comes from the texture lock
+    int pitch; // Don't quite know what this does....
 
     SDL_LockTexture(tDisp, NULL, &pixels, &pitch);
     
@@ -52,33 +43,38 @@ int main( int argc, char* args[] )
     
     SDL_UnlockTexture(tDisp);
     
+    // Update the display...
     SDL_RenderClear(rDisp);
     SDL_RenderCopy(rDisp, tDisp, NULL, NULL);
     SDL_RenderPresent(rDisp);
     
     
-    int key = 0;
+    bool key = false;
     
     SDL_Event event;
 
-    
     while(!key){
-               
-               Sleep(10);
                 
                 while(SDL_PollEvent(&event)) {      
                     switch (event.type){
                         case SDL_QUIT:
-                             key = 1;
+                             key = true;
                              break;
                         case SDL_KEYDOWN:
-                             key = 1;
+                             key = true;
                              break;
                     }
                 }
+                
+                SDL_Delay(20);
     }
     //Quit SDL
-    //SDL_Quit();
+    SDL_DestroyRenderer(rCtrl);
+    SDL_DestroyRenderer(rDisp);
+    SDL_DestroyWindow(wCtrl);
+    SDL_DestroyWindow(wDisp);
     
+    SDL_Quit();
+    exit(0);
     return 0;    
 }
