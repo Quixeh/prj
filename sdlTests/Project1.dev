@@ -1,7 +1,7 @@
 [Project]
 FileName=Project1.dev
 Name=SDLtest
-UnitCount=1
+UnitCount=3
 Type=0
 Ver=1
 ObjFiles=
@@ -56,4 +56,24 @@ OriginalFilename=
 ProductName=
 ProductVersion=
 AutoIncBuildNr=0
+
+[Unit2]
+FileName=PxGrp.h
+CompileCpp=1
+Folder=SDLtest
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit3]
+FileName=View.h
+CompileCpp=1
+Folder=SDLtest
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 

@@ -1,0 +1,10 @@
+Starting SDL.
+Creating View.
+Applying Fn to View.
+Creating Output.
+data created
+data populated
+image output begin
+25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 
+24 24 24 24 24 24 24 24 24 24 24 24 24 24 24 24 24 24 24 24 24 24 
+image outputted
