@@ -20,7 +20,7 @@ using namespace std;
 
 int main( int argc, char* args[] ){
      
-    // Start SDL ////
+    // Start SDL
     SDL_Init( SDL_INIT_EVERYTHING );
     
     // Windows
@@ -57,8 +57,7 @@ int main( int argc, char* args[] ){
     SDL_RenderClear(rDisp);
     SDL_RenderCopy(rDisp, tDisp, NULL, NULL);
     SDL_RenderPresent(rDisp);
-    
-    
+
     bool key = false;
     
     SDL_Event event;

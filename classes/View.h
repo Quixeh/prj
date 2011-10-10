@@ -33,6 +33,9 @@ class View {
 	private:
 		int pxSize, Xres, Yres;
 		PxGrp** groups;
+		Uint32  gPixel(SDL_Surface*, int, int);
+		void sPixel(SDL_Surface*, int, int, Uint32);
+		
 	public:
 		void applyXfn();
 		View(int);
@@ -130,56 +133,81 @@ char View::output(){
 	cout << "View::output: Output Complete" << endl;
 }
 
-bool View::outputToSdl(){
-      cout << "View::outputToSdl: Commencing SDL Output" << endl;
-      // Define Pixel Manipulation Vars
-    Uint32 *pix; // Current Working Pixel/   
-    void *pixels; // Pixels to work upon - comes from the texture lock
-    int pitch; // Don't quite know what this does....
-   int min_value = 0;
-     int max_value = pxSize * pxSize;
-     
-  cout << "View::outputToSdl: Locking Texture" << endl;   
-  SDL_LockTexture(tDisp, NULL, &pixels, &pitch);
-    
-    
-    cout << "View::outputToSdl: Cycling..." << endl;
-    cout << "Yres: " << Yres << " xRes: " << Xres << " Pitch: " << pitch << endl;
-    for (int x=0; x<190; x++){
-       cout << x << " ";
-       pix = (Uint32*)((Uint8*)pixels + x *pitch);
-       for (int y=0; y<50; y++){
-           double val = 255 * ((groups[x][y].getValue() - min_value) / double(max_value));
-          SDL_Color colour = {int(val),int(val),int(val)};
-           *pix = ((colour.r<<16)|(colour.g<<8)|colour.b);
-      }
-   }
-    
-   cout << "View::outputToSdl: Unlocking Texture" << endl;
-   SDL_UnlockTexture(tDisp);
+Uint32  View::gPixel( SDL_Surface *surface, int x, int y ){
+    Uint32 *pixels = (Uint32 *)surface->pixels;
+    return pixels[ ( y * surface->w ) + x ];
+}
 
-    SDL_RenderClear(rDisp);
-    SDL_RenderCopy(rDisp, tDisp, NULL, NULL);
-    SDL_RenderPresent(rDisp);
+void View::sPixel( SDL_Surface *surface, int x, int y, Uint32 pixel ){
+    Uint32 *pixels = (Uint32 *)surface->pixels;
+    pixels[ ( y * surface->w ) + x ] = pixel;
+}
+
+bool View::outputToSdl(){
+	cout << "View::outputToSdl: Commencing SDL Output" << endl;
+
+	cout << "View::outputToSdl: Locking Texture" << endl;   
+	//SDL_LockTexture(tDisp, NULL, &pixels, &pitch);
+	
+	int min_value = 0;
+	int max_value = pxSize * pxSize;
+     	
+	cout << "View::outputToSdl: Cycling..." << endl;
+	
+	SDL_Surface *surf;
+	
+	Uint32 rmask, gmask, bmask, amask;
     
-      cout << "View::outputToSdl: SDL Output Complete" << endl;
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+		rmask = 0xff000000;
+		gmask = 0x00ff0000;
+		bmask = 0x0000ff00;
+		amask = 0x000000ff;
+	#else
+		rmask = 0x000000ff;
+		gmask = 0x0000ff00;
+		bmask = 0x00ff0000;
+		amask = 0xff000000;
+	#endif
+
+	surf = SDL_CreateRGBSurface(0, Xres, Yres, 32, rmask, gmask, bmask, amask);
+	
+	for (int x=0; x<Xres; x++){
+        	for (int y=0; y<Yres; y++){
+        		double val = 255 * ((groups[x][y].getValue() - min_value) / double(max_value));
+			sPixel(surf, x, y, SDL_MapRGB(surf->format, int(val), int(val), int(val)));
+          	}
+      	} 
+    
+	SDL_Texture* newDisplay;
+	
+	newDisplay = SDL_CreateTextureFromSurface(rDisp, surf);
+
+	cout << "View::outputToSdl: Unlocking Texture" << endl;
+	//SDL_UnlockTexture(tDisp);
+
+	SDL_RenderClear(rDisp);
+	SDL_RenderCopy(rDisp, newDisplay, NULL, NULL);
+	SDL_RenderPresent(rDisp);
+    
+	cout << "View::outputToSdl: SDL Output Complete" << endl;
 }
 
 bool View::outputToBmp(){
-     int min_value = 0;
-     int max_value = pxSize * pxSize;
+	int min_value = 0;
+	int max_value = pxSize * pxSize;
      
-     cout << "In BMP Output." << endl;
+	cout << "In BMP Output." << endl;
      
-     // Open the output BMP file
-    std::ofstream f( "output.bmp", std::ios::out | std::ios::trunc | std::ios::binary );
-    if (!f) return false;
+	// Open the output BMP file
+	std::ofstream f( "output.bmp", std::ios::out | std::ios::trunc | std::ios::binary );
+	if (!f) return false;
 
-    // Some basic
-    unsigned long headers_size    = 14  // sizeof( BITMAPFILEHEADER )
-                                  + 40; // sizeof( BITMAPINFOHEADER )
-    unsigned long padding_size    = (4 - ((Yres * 3) % 4)) % 4;
-    unsigned long pixel_data_size = Xres * ((Yres * 3) + padding_size);
+	// Some basic
+	unsigned long headers_size    = 14  // sizeof( BITMAPFILEHEADER )
+					+ 40; // sizeof( BITMAPINFOHEADER )
+	unsigned long padding_size    = (4 - ((Yres * 3) % 4)) % 4;
+	unsigned long pixel_data_size = Xres * ((Yres * 3) + padding_size);
 
     // Write the BITMAPFILEHEADER
     f.put( 'B' ).put( 'M' );                           // bfType
