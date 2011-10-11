@@ -3,7 +3,7 @@
 *
 **/
 
-double pxGrpSize = 5;
+double pxGrpSize = 20;
 
 int Xres = int(1920/pxGrpSize);
 int Yres = int(1080/pxGrpSize);

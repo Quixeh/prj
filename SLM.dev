@@ -1,18 +1,18 @@
 [Project]
 FileName=SLM.dev
 Name=SLM
-UnitCount=4
+UnitCount=5
 Type=1
 Ver=1
 ObjFiles=
 Includes=E:\Programs\DevCPP\App\devcpp\include
-Libs=
+Libs=E:\prj\lib
 PrivateResource=
 ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker=-lmingw32 -lSDLmain -lSDL_@@_-lfltk -lX11 -lm_@@_
+Linker=-lmingw32 -lSDLmain -lSDL -lalpD41_@@_
 IsCpp=1
 Icon=
 ExeOutput=
@@ -79,6 +79,16 @@ BuildCmd=
 
 [Unit3]
 FileName=classes\View.h
+CompileCpp=1
+Folder=classes
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit5]
+FileName=classes\AlpDMD.h
 CompileCpp=1
 Folder=classes
 Compile=1

@@ -11,23 +11,24 @@
 
 using namespace std;
 
-  struct lwrite
-    {
-    unsigned long value;
-    unsigned      size;
-    lwrite( unsigned long value, unsigned size ):
-      value( value ), size( size )
-      { }
-    };
+// Useful Structures
 
-  //--------------------------------------------------------------------------
-  inline std::ostream& operator << ( std::ostream& outs, const lwrite& v )
-    {
-    unsigned long value = v.value;
-    for (unsigned cntr = 0; cntr < v.size; cntr++, value >>= 8)
-      outs.put( static_cast <char> (value & 0xFF) );
-    return outs;
-    }
+struct lwrite {
+	unsigned long value;
+	unsigned      size;
+	lwrite( unsigned long value, unsigned size ):
+	value( value ), size( size )
+	{ }
+};
+
+inline std::ostream& operator << ( std::ostream& outs, const lwrite& v ){
+	unsigned long value = v.value;
+	for (unsigned cntr = 0; cntr < v.size; cntr++, value >>= 8)
+		outs.put( static_cast <char> (value & 0xFF) );
+	return outs;
+}
+
+// Class Definition
 
 class View {
 	private:
@@ -44,6 +45,8 @@ class View {
 		bool outputToSdl();
 		bool outputToBmp();
 };
+
+// Member Functions
 
 View::View(int setPxSize){
 	pxSize = setPxSize;
@@ -76,60 +79,22 @@ void View::applyXfn(){
      double xV = 0;
 
 	for (int x=0; x<Xres; x++){
-        // xV = (x/double(Xres))* (pxSize * pxSize); // Grey-Scale
-        xV = ( ((x-(Xres/2.0))*(x-(Xres/2.0))/double((Xres/2.0) * (Xres/2.0))) * (pxSize * pxSize));
+        xV = (x/double(Xres))* (pxSize * pxSize); // Grey-Scale
+        //xV = ( ((x-(Xres/2.0))*(x-(Xres/2.0))/double((Xres/2.0) * (Xres/2.0))) * (pxSize * pxSize));
 		for (int y=0; y<Yres; y++){
-			groups[x][y].setValue(int(xV)); 
+			groups[x][y].setValue(int(floor(xV+0.5))); 
 		}
-      //  cout << int(xV) << " " << itterations << endl;
+                cout << xV << " -> " << int(floor(xV+0.5)) << endl;
 	}	
 }
 
 char View::output(){
-
-	int** data;
-	data = new int*[Xres];
-	for (int i=0; i<Xres; i++){
-		data[i] = new int[Yres];
-	}
-    cout << "View::output: Output Data Created" << endl;
-
-	for (int x=0; x<(Xres); x++){
-		for (int y=0; y<Yres; y++){
-           // cout << " " << y << endl;
-           // data[x][y] = 0;
-		  	data[x][y] = groups[x][y].getValue();
-		  	
-		  	//cout << "x: " << x << " y: " << y << " orig: " << groups[x][y].getValue() << " copy: " << data[x][y] << endl;
-		}
-	}
-	cout << "View::output: Output Data Cloned" << endl;
-
-	for (int y=0; y<Yres; y++){
-		for (int line=1; line<5; line++){
-			for (int x=0; x<Xres; x++){
-				//groups[x][y]->output(line);
-				//cout << x << " " << y << " " << line << endl;
-			}
-		}
-	}
 	
 	cout << "View::output: Commencing Output" << endl;
 
    outputToBmp();
    outputToSdl(); 
     
-/*    for (int y=0; y<Yres; y+=10){
-        cout << groups[0][y].getValue() << " ";
-    }
-    
-    cout << endl;
-
-    for (int y=0; y<Yres; y+=10){
-        cout << groups[Xres-1][y].getValue() << " ";
-    }
-    
-    cout << endl;*/
 	cout << "View::output: Output Complete" << endl;
 }
 
@@ -197,7 +162,7 @@ bool View::outputToBmp(){
 	int min_value = 0;
 	int max_value = pxSize * pxSize;
      
-	cout << "In BMP Output." << endl;
+	cout << "View::outputToBmp: Commencing BMP Output" << endl;
      
 	// Open the output BMP file
 	std::ofstream f( "output.bmp", std::ios::out | std::ios::trunc | std::ios::binary );
@@ -264,6 +229,7 @@ bool View::outputToBmp(){
       }
 
     // All done!
+    	cout << "View::outputToBmp: BMP Output Complete" << endl;
     return f.good();
     }    
 
