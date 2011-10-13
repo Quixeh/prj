@@ -15,26 +15,29 @@
 // Classes
 #include "classes/PxGrp.h"
 #include "classes/View.h"
-#include "classes/AlpDMD.h"
+//#include "classes/AlpDMD.h"
 
 using namespace std;
 
 int main( int argc, char* args[] ){
      
-	// Start SDL //////////
+	// Start SDL /////////
 	SDL_Init( SDL_INIT_EVERYTHING );
 	
 	// Windows
 //	wCtrl = SDL_CreateWindow("SLM Control Panel",100,100,230,600,SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
-	wDisp = SDL_CreateWindow("DMD Display",500,100,Xres,Yres,SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL);
+	wDisp = SDL_CreateWindow("DMD Display",100,100,Xres,Yres,SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL);
+	wDispFull = SDL_CreateWindow("DMD Fullsize",200,30,1980,1080,SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
 	
 	// Renderers
 //	rCtrl = SDL_CreateRenderer(wCtrl, -1, 0);
 	rDisp = SDL_CreateRenderer(wDisp, -1, 0);
+	rDispFull = SDL_CreateRenderer(wDispFull, -1, 0);
 	
 	// Textures
 //	tCtrl = SDL_CreateTexture(rCtrl, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, 50, 50);
 	tDisp = SDL_CreateTexture(rDisp, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_STREAMING, 50, 50);
+	tDispFull = SDL_CreateTexture(rDispFull, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_STREAMING, 50, 50);
 	
 	// Define Pixel Manipulation Vars
 	Uint32 *pix; // Current Working Pixel
@@ -42,6 +45,7 @@ int main( int argc, char* args[] ){
 	int pitch; // Don't quite know what this does....
 	
 	SDL_LockTexture(tDisp, NULL, &pixels, &pitch);
+//	SDL_LockTexture(tFullDisp, NULL, &pixels, &pitch);
 	
 	// Set the display to a default colour...	
 	SDL_Color colourDefault = {115,115,115};
@@ -54,6 +58,7 @@ int main( int argc, char* args[] ){
 	}
 	
 	SDL_UnlockTexture(tDisp);
+//	SDL_UnlockTexture(tFullDisp);
 	
 	// Update the display...
 	SDL_RenderClear(rDisp);
@@ -93,8 +98,10 @@ int main( int argc, char* args[] ){
 	//Quit SDL
 //	SDL_DestroyRenderer(rCtrl);
 	SDL_DestroyRenderer(rDisp);
+	SDL_DestroyRenderer(rDispFull);
 //	SDL_DestroyWindow(wCtrl);
 	SDL_DestroyWindow(wDisp);
+	SDL_DestroyWindow(wDispFull);
 	
 	SDL_Quit();
 	exit(0);

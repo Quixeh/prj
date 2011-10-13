@@ -44,6 +44,7 @@ class View {
 		void randomise();
 		bool outputToSdl();
 		bool outputToBmp();
+		bool outputToSdlFull();
 };
 
 // Member Functions
@@ -84,7 +85,7 @@ void View::applyXfn(){
 		for (int y=0; y<Yres; y++){
 			groups[x][y].setValue(int(floor(xV+0.5))); 
 		}
-                cout << xV << " -> " << int(floor(xV+0.5)) << endl;
+              //  cout << xV << " -> " << int(floor(xV+0.5)) << endl;
 	}	
 }
 
@@ -94,6 +95,7 @@ char View::output(){
 
    outputToBmp();
    outputToSdl(); 
+   outputToSdlFull();
     
 	cout << "View::output: Output Complete" << endl;
 }
@@ -156,6 +158,69 @@ bool View::outputToSdl(){
 	SDL_RenderPresent(rDisp);
     
 	cout << "View::outputToSdl: SDL Output Complete" << endl;
+}
+
+bool View::outputToSdlFull(){
+	cout << "View::outputToSdlFull: Commencing Full SDL Output" << endl;
+
+	cout << "View::outputToSdlFull: Locking Texture" << endl;   
+	//SDL_LockTexture(tDisp, NULL, &pixels, &pitch);
+	
+	int min_value = 0;
+	int max_value = pxSize * pxSize;
+     	
+	SDL_Surface *surf;
+	
+	Uint32 rmask, gmask, bmask, amask;
+    
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+		rmask = 0xff000000;
+		gmask = 0x00ff0000;
+		bmask = 0x0000ff00;
+		amask = 0x000000ff;
+	#else
+		rmask = 0x000000ff;
+		gmask = 0x0000ff00;
+		bmask = 0x00ff0000;
+		amask = 0xff000000;
+	#endif
+
+	surf = SDL_CreateRGBSurface(0, 1920, 1080, 32, rmask, gmask, bmask, amask);
+	
+	cout << "View::outputToSdlFull: Cycling..." << endl;
+	cout << Xres << " " << Yres << endl;
+	for (int x=0; x<Xres; x++){
+        	for (int y=0; y<Yres; y++){
+			for (int i=1; i<pxGrpSize; i++){
+				//cout << x << " " << y << " " << i <<endl;
+				string line = groups[x][y].getLine(i);
+				//cout << line << endl;
+				for (int j=0; j<line.size(); j++){
+		        		int val;
+					if (line[j] == 1){
+		        			val = 255;
+					} else {
+						val = 0;
+					} 
+					//cout << val << endl;
+					sPixel(surf, int(x*pxGrpSize+j), int(y*pxGrpSize+i), SDL_MapRGB(surf->format, int(val), int(val), int(val)));
+				}
+			}
+          	}
+      	} 
+    
+	SDL_Texture* newDisplay;
+	
+	newDisplay = SDL_CreateTextureFromSurface(rDisp, surf);
+
+	cout << "View::outputToSdlFull: Unlocking Texture" << endl;
+	//SDL_UnlockTexture(tDisp);
+
+	SDL_RenderClear(rDispFull);
+	SDL_RenderCopy(rDispFull, newDisplay, NULL, NULL);
+	SDL_RenderPresent(rDispFull);
+    
+	cout << "View::outputToSdlFull: Full SDL Output Complete" << endl;
 }
 
 bool View::outputToBmp(){
