@@ -5,7 +5,7 @@
 
 using namespace std;
 
-double pxGrpSize = 20;
+double pxGrpSize = 2;
 int pxFillMode = 1;
 
 int Xres = int(1920/pxGrpSize);

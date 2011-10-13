@@ -16,6 +16,7 @@ class PxGrp {
 		PxGrp ();
 		void setPxSize(int);
 		int getValue();
+		int getData(int, int);
 		void setValue(int);	
 		string getLine(int);
 };
@@ -26,12 +27,18 @@ PxGrp::PxGrp (){
 }
 
 void PxGrp::setPxSize(int setSize){
-	
+	//cout << setSize << " ";
 	size = setSize;
 	data = new int*[size];
 	
 	for (int i=0; i<size; i++){
 		data[i] = new int[size];
+	}
+	
+	for (int x=0; x<size; x++){
+		for (int y=0; y<size; y++){
+			data[x][y] = 0;
+		}
 	}
 }
 
@@ -39,16 +46,23 @@ int PxGrp::getValue(){
 	return value;
 }
 
+int PxGrp::getData(int x, int y){
+	return data[x][y];
+}
+
 string PxGrp::getLine(int i){
 	
 	string rtn;
+	rtn = "";
 	
 	for (int x=0; x<size; x++){
-		if (data[x][(i-1)] == 0){
-			rtn += '0';
-		} else {
+		 
+		if (data[x][(i)] == 1){
 			rtn += '1';
+		} else {
+			rtn += '0';
 		}
+		//cout << data[x][(i)] << " " << rtn << endl;
 	}
 	return rtn;
 }
@@ -56,19 +70,23 @@ string PxGrp::getLine(int i){
 void PxGrp::setValue(int sValue){
 	value = sValue;
 	
-	switch (pxFillMode){
-		case 1:
-		default:
-			int filled = 0;
-			for (int x=0; x<size; x++){
+	if (value != 0){
+		switch (pxFillMode){
+			case 1:
+			default:
+				int filled = 0;
+				
 				for (int y=0; y<size; y++){
-					data[x][y] = 1;
-					filled++;
-					
-					if (filled == value){
-						return;
+					for (int x=0; x<size; x++){
+						
+						data[x][y] = 1;
+						filled++;
+						
+						if (filled == sValue){
+							return;
+						}
 					}
 				}
-			}
-	}			
+		}
+	}	
 }

@@ -21,13 +21,15 @@ using namespace std;
 
 int main( int argc, char* args[] ){
      
-	// Start SDL /////////
+	// Start SDL ///////////////
 	SDL_Init( SDL_INIT_EVERYTHING );
 	
 	// Windows
 //	wCtrl = SDL_CreateWindow("SLM Control Panel",100,100,230,600,SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
-	wDisp = SDL_CreateWindow("DMD Display",100,100,Xres,Yres,SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL);
-	wDispFull = SDL_CreateWindow("DMD Fullsize",200,30,1980,1080,SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
+	wDisp = SDL_CreateWindow("DMD Display",100,100,Xres,Yres,SDL_WINDOW_SHOWN);
+	wDispFull = SDL_CreateWindow("DMD Fullsize",200,30,1920,1080,SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
+	
+	cout << "Xres: " << Xres << " Yres: " << Yres << endl;
 	
 	// Renderers
 //	rCtrl = SDL_CreateRenderer(wCtrl, -1, 0);

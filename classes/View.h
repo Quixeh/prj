@@ -40,11 +40,13 @@ class View {
 	public:
 		void applyXfn();
 		View(int);
+		int getPix(int, int);
 		char output(); 
 		void randomise();
 		bool outputToSdl();
 		bool outputToBmp();
 		bool outputToSdlFull();
+		bool outputToBmpFull();
 };
 
 // Member Functions
@@ -57,7 +59,7 @@ View::View(int setPxSize){
 	for (int i=0;i<Xres;i++){
 		groups[i] = new PxGrp[Yres];
 		for (int j=0;j<Yres;j++){
-			groups[i][j].setPxSize(5);
+			groups[i][j].setPxSize(pxSize);
 		}
 	}
 }
@@ -75,13 +77,22 @@ void View::randomise(){
 	}
 }
 
+int View::getPix(int x, int y){
+	int h = int(floor((x)/double(pxGrpSize)));
+	int k = int(floor((y)/double(pxGrpSize)));
+	int i = int(x - (h*pxGrpSize));
+	int j = int(y - (k*pxGrpSize));
+	groups[h][k].getData(i,j);
+}
+
 void View::applyXfn(){
 
      double xV = 0;
 
 	for (int x=0; x<Xres; x++){
-        xV = (x/double(Xres))* (pxSize * pxSize); // Grey-Scale
-        //xV = ( ((x-(Xres/2.0))*(x-(Xres/2.0))/double((Xres/2.0) * (Xres/2.0))) * (pxSize * pxSize));
+        	xV = (x/double(Xres))* (pxSize * pxSize); // Grey-Scale
+        	//xV = ( ((x-(Xres/2.0))*(x-(Xres/2.0))/double((Xres/2.0) * (Xres/2.0))) * (pxSize * pxSize));
+		
 		for (int y=0; y<Yres; y++){
 			groups[x][y].setValue(int(floor(xV+0.5))); 
 		}
@@ -93,10 +104,10 @@ char View::output(){
 	
 	cout << "View::output: Commencing Output" << endl;
 
-   outputToBmp();
-   outputToSdl(); 
+   outputToBmpFull();
+   outputToBmp(); 
    outputToSdlFull();
-    
+  // outputToSdl(); 
 	cout << "View::output: Output Complete" << endl;
 }
 
@@ -138,6 +149,8 @@ bool View::outputToSdl(){
 	#endif
 
 	surf = SDL_CreateRGBSurface(0, Xres, Yres, 32, rmask, gmask, bmask, amask);
+	
+	
 	
 	for (int x=0; x<Xres; x++){
         	for (int y=0; y<Yres; y++){
@@ -187,31 +200,26 @@ bool View::outputToSdlFull(){
 
 	surf = SDL_CreateRGBSurface(0, 1920, 1080, 32, rmask, gmask, bmask, amask);
 	
+	SDL_LockSurface(surf);
+	
 	cout << "View::outputToSdlFull: Cycling..." << endl;
-	cout << Xres << " " << Yres << endl;
-	for (int x=0; x<Xres; x++){
-        	for (int y=0; y<Yres; y++){
-			for (int i=1; i<pxGrpSize; i++){
-				//cout << x << " " << y << " " << i <<endl;
-				string line = groups[x][y].getLine(i);
-				//cout << line << endl;
-				for (int j=0; j<line.size(); j++){
-		        		int val;
-					if (line[j] == 1){
-		        			val = 255;
-					} else {
-						val = 0;
-					} 
-					//cout << val << endl;
-					sPixel(surf, int(x*pxGrpSize+j), int(y*pxGrpSize+i), SDL_MapRGB(surf->format, int(val), int(val), int(val)));
-				}
-			}
+	//cout << Xres << " " << Yres << endl;
+	
+        for (int y=0; y<1080; y++){
+		for (int x=0; x<1920; x++){
+		
+			int val = 255 * getPix(x,y);
+			
+			sPixel(surf, int(x), int(y), SDL_MapRGB(surf->format, int(val), int(val), int(val)));
+		
           	}
       	} 
     
+    	SDL_UnlockSurface(surf);
+    	
 	SDL_Texture* newDisplay;
 	
-	newDisplay = SDL_CreateTextureFromSurface(rDisp, surf);
+	newDisplay = SDL_CreateTextureFromSurface(rDispFull, surf);
 
 	cout << "View::outputToSdlFull: Unlocking Texture" << endl;
 	//SDL_UnlockTexture(tDisp);
@@ -298,3 +306,77 @@ bool View::outputToBmp(){
     return f.good();
     }    
 
+bool View::outputToBmpFull(){
+	int min_value = 0;
+	int max_value = pxSize * pxSize;
+     
+	cout << "View::outputToBmpFull: Commencing Full BMP Output" << endl;
+     
+	// Open the output BMP file
+	std::ofstream f( "outputFull.bmp", std::ios::out | std::ios::trunc | std::ios::binary );
+	if (!f) return false;
+
+	// Some basic
+	unsigned long headers_size    = 14  // sizeof( BITMAPFILEHEADER )
+					+ 40; // sizeof( BITMAPINFOHEADER )
+	unsigned long padding_size    = (4 - ((1080 * 3) % 4)) % 4;
+	unsigned long pixel_data_size = 1920 * ((1080 * 3) + padding_size);
+
+    // Write the BITMAPFILEHEADER
+    f.put( 'B' ).put( 'M' );                           // bfType
+    f << lwrite( headers_size + pixel_data_size, 4 );  // bfSize
+    f << lwrite( 0,                              2 );  // bfReserved1
+    f << lwrite( 0,                              2 );  // bfReserved2
+    f << lwrite( headers_size,                   4 );  // bfOffBits
+
+    // Write the BITMAPINFOHEADER
+    f << lwrite( 40,4 );  // biSize
+    f << lwrite( 1920, 4 );  // biWidth
+    f << lwrite( 1080,                           4 );  // biHeight
+    f << lwrite( 1,                              2 );  // biPlanes
+    f << lwrite( 24,                              2 );  // biBitCount
+    f << lwrite( 0,                              4 );  // biCompression=BI_RGB
+    f << lwrite( pixel_data_size,                4 );  // biSizeImage
+    f << lwrite( 0,                              4 );  // biXPelsPerMeter
+    f << lwrite( 0,                              4 );  // biYPelsPerMeter
+    f << lwrite( 0,                              4 );  // biClrUsed
+    f << lwrite( 0,                              4 );  // biClrImportant
+
+     // Write the pixel data
+   // std::cout << min_value << " " << max_value << std::endl;
+    for (unsigned y = 1080; y; y--)           // bottom-to-top
+      {
+    //  std::cout << "Y Works" << std::endl;
+      for (unsigned x = 0; x < 1920; x++)  // left-to-right
+        {
+    //    std::cout << "X Works" << std::endl;
+        unsigned char red, green, blue;
+        //
+        // This is how we convert an integer value to a color:
+        // by mapping it evenly along the CIECAM02 hue color domain.
+        //
+        // http://en.wikipedia.org/wiki/Hue
+        // http://en.wikipedia.org/wiki/hsl_and_hsv#conversion_from_hsv_to_rgb
+        //
+        // The following algorithm takes a few shortcuts since
+        // both 'value' and 'saturation' are always 1.0.
+        //
+        
+        double val = 255 * getPix(x,y-1);
+        red = int(val);
+        green = int(val);
+        blue = int(val);
+       // std::cout << y-1 << " " << x <<  " " << groups[ x][ y-1].getValue() << " " << int(val) << std::endl;
+
+        f.put( static_cast <char> (blue)  )
+         .put( static_cast <char> (green) )
+         .put( static_cast <char> (red)   );
+        }
+
+      if (padding_size) f << lwrite( 0, padding_size );
+      }
+
+    // All done!
+    	cout << "View::outputToBmp: BMP Output Complete" << endl;
+    return f.good();
+    }    
