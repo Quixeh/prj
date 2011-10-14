@@ -103,11 +103,13 @@ void View::applyXfn(){
 char View::output(){
 	
 	cout << "View::output: Commencing Output" << endl;
-
-   outputToBmpFull();
-   outputToBmp(); 
-   outputToSdlFull();
-  // outputToSdl(); 
+	
+	if (showFullSize) outputToSdlFull();
+	if (showDisplay) outputToSdl(); 
+	if (outputFullBmp) outputToBmpFull();
+	if (outputBmp) outputToBmp(); 
+  
+   
 	cout << "View::output: Output Complete" << endl;
 }
 
