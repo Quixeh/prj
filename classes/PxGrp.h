@@ -70,8 +70,27 @@ string PxGrp::getLine(int i){
 void PxGrp::setValue(int sValue){
 	value = sValue;
 	
+	for (int y=0; y<size; y++){
+		for (int x=0; x<size; x++){		
+			data[x][y] = 0;
+		}
+	}
+	
 	if (value != 0){
 		switch (pxFillMode){
+			case 2: 
+				
+				for (int filled = 0; filled < sValue; NULL){
+					int x = rand() % size;
+					int y = rand() % size;
+					
+					if (data[x][y] != 1){
+						data[x][y] = 1;
+						filled++;
+					}
+				}
+				
+				break;
 			case 1:
 			default:
 				int filled = 0;

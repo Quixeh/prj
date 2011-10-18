@@ -65,13 +65,18 @@ View::View(int setPxSize){
 }
 
 void View::randomise(){
-	srand(time(NULL));	
+		
 	for (int x=0; x<Xres; x++){
 		for (int y=0; y<Yres; y++){		
-			int IO = rand() % 5;
-			if (IO == 4){
-				groups[x][y].setValue(rand() % 25 + 1);
-				//cout << groups[x][y].getValue() << " ";
+			int IO = rand() % 1;
+			//cout << x << " " << y << " Ran: " << IO << endl;
+			if (IO == 0){
+				int val = rand() % int(pxGrpSize*pxGrpSize + 1);
+				//cout << x << " " << y << " " << val << endl;
+				groups[x][y].setValue(val);
+				
+			} else {
+				groups[x][y].setValue(0);
 			}
 		}
 	}

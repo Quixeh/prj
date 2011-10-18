@@ -96,14 +96,19 @@
 using namespace std;
 
 int main( int argc, char* args[] ){
+	
+	srand(0);
      
-	// Start SDL /////////////////
-	SDL_Init( SDL_INIT_EVERYTHING );
+	// Start SDL / 
+	SDL_Init(SDL_INIT_EVERYTHING);
 	
 	// Windows
 //	wCtrl = SDL_CreateWindow("SLM Control Panel",100,100,230,600,SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
 	if (showDisplay) wDisp = SDL_CreateWindow("DMD Display",100,100,Xres,Yres,SDL_WINDOW_SHOWN);
-	if (showFullSize) wDispFull = SDL_CreateWindow("DMD Fullsize",200,30,1920,1080,SDL_WINDOW_SHOWN);
+	if (showFullSize) {
+		wDispFull = SDL_CreateWindow("DMD Fullsize",1920,0,1920,1080,SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
+		//SDL_SetWindowFullscreen(wDispFull, SDL_TRUE);
+	}
 	
 	cout << "Xres: " << Xres << " Yres: " << Yres << endl;
 	
@@ -111,7 +116,7 @@ int main( int argc, char* args[] ){
 //	rCtrl = SDL_CreateRenderer(wCtrl, -1, 0);
 	if (showDisplay)rDisp = SDL_CreateRenderer(wDisp, -1, 0);
 	if (showFullSize) rDispFull = SDL_CreateRenderer(wDispFull, -1, 0);
-	
+	 
 	// Textures
 //	tCtrl = SDL_CreateTexture(rCtrl, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, 50, 50);
 	if (showDisplay) tDisp = SDL_CreateTexture(rDisp, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_STREAMING, 50, 50);
@@ -143,35 +148,81 @@ int main( int argc, char* args[] ){
 		SDL_RenderPresent(rDisp);
 	}
 	
-	bool key = false;
+	bool close = false;
 	
 	SDL_Event event;
 	int intPxGrpSize = int(pxGrpSize);
 	
 	cout << "Main: Creating View." << endl;
 	View view(intPxGrpSize);
+	View view2(intPxGrpSize);
 	
 	cout << "Main: Applying Fn to View." << endl;
-	view.applyXfn();
+	view.randomise();
 	
 	cout << "Main: Creating Output." << endl;
 	view.output();
-   
-	while(!key){ // SDL Event Loop
-	        
+   	
+   	int choice;
+   	
+   	while (!close){
+		cout << endl << endl << "Main Menu" << endl << "---------" << endl;
+		cin >> choice;
+		
+		switch (choice){
+			case 1:
+				cout << endl << "Choice 1 - Randomising" << endl;
+				view2.randomise();
+				cout << "Choice 1 - Outputting" << endl;
+				view2.output();
+				break;
+			case 2:
+				cout << endl << "Choice 2 - Applying Xfn" << endl;
+				view2.applyXfn();
+				cout << "Choice 2 - Outputting" << endl;
+				view2.output();
+				break;
+		}
+		
 		while(SDL_PollEvent(&event)) {      
 			switch (event.type){
 				case SDL_QUIT:
-				     key = true;
+				     close = true;
 				     break;
 				case SDL_KEYDOWN:
-				     key = true;
+					if (event.key.keysym.sym == SDLK_ESCAPE){
+						close = true;
+					}	
+				     
 				     break;
 			}
 		}
 		
+		
+		
 		SDL_Delay(20);
 	}
+   	
+	/*while(!close){ // SDL Event Loop
+	        
+		while(SDL_PollEvent(&event)) {      
+			switch (event.type){
+				case SDL_QUIT:
+				     close = true;
+				     break;
+				case SDL_KEYDOWN:
+					if (event.key.keysym.sym == SDLK_ESCAPE){
+						close = true;
+					}	
+				     
+				     break;
+			}
+		}
+		
+		
+		
+		SDL_Delay(20);
+	}*/
 	
 	//Quit SDL
 //	SDL_DestroyRenderer(rCtrl);

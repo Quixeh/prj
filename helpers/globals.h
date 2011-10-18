@@ -6,10 +6,10 @@
 using namespace std;
 
 double pxGrpSize = 5;
-int pxFillMode = 1;
+int pxFillMode = 2;
 
-bool showFullSize = false;
-bool showDisplay = false;
+bool showFullSize = true;
+bool showDisplay = true;
 bool outputBmp = false;
 bool outputFullBmp = false;
 
