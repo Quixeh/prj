@@ -5,9 +5,12 @@
 
 using namespace std;
 
+bool debugMode = true;
+
 double pxGrpSize = 5;
 int pxFillMode = 2;
 
+bool showCtrl = false;
 bool showFullSize = true;
 bool showDisplay = true;
 bool outputBmp = false;
