@@ -38,11 +38,13 @@ class View {
 		void sPixel(SDL_Surface*, int, int, Uint32);
 		
 	public:
-		void applyXfn();
+		void applyXfn(int);
+		void applyYfn(int);
+		void invert();
 		View(int);
 		int getPix(int, int);
 		char output(); 
-		void randomise();
+		void randomise(double);
 		bool outputToSdl();
 		bool outputToBmp();
 		bool outputToSdlFull();
@@ -64,14 +66,15 @@ View::View(int setPxSize){
 	}
 }
 
-void View::randomise(){
+void View::randomise(double chance){
 		
 	for (int x=0; x<Xres; x++){
 		for (int y=0; y<Yres; y++){		
-			int IO = rand() % 1;
+			int IO = rand() % int(1/chance);
 			//cout << x << " " << y << " Ran: " << IO << endl;
 			if (IO == 0){
-				int val = rand() % int(pxGrpSize*pxGrpSize + 1);
+				int val = rand() % int(pxGrpSize*pxGrpSize);
+				val++;
 				//cout << x << " " << y << " " << val << endl;
 				groups[x][y].setValue(val);
 				
@@ -90,19 +93,58 @@ int View::getPix(int x, int y){
 	groups[h][k].getData(i,j);
 }
 
-void View::applyXfn(){
+void View::applyXfn(int type){
 
      double xV = 0;
 
 	for (int x=0; x<Xres; x++){
-        	xV = (x/double(Xres))* (pxSize * pxSize); // Grey-Scale
-        	//xV = ( ((x-(Xres/2.0))*(x-(Xres/2.0))/double((Xres/2.0) * (Xres/2.0))) * (pxSize * pxSize));
+		switch (type){
+			case 1:
+				// Grey-Scale
+				xV = (x/double(Xres))* (pxSize * pxSize); 
+				break;
+			case 2:
+				// X^2 Centred at X/2. 
+        			xV = ( ((x-(Xres/2.0))*(x-(Xres/2.0))/double((Xres/2.0) * (Xres/2.0))) * (pxSize * pxSize));
+        			break;
+		}
 		
 		for (int y=0; y<Yres; y++){
 			groups[x][y].setValue(int(floor(xV+0.5))); 
 		}
               //  cout << xV << " -> " << int(floor(xV+0.5)) << endl;
 	}	
+}
+
+void View::applyYfn(int type){
+
+     double yV = 0;
+
+	for (int y=0; y<Yres; y++){
+		switch (type){
+			case 1:
+				// Grey-Scale
+				yV = (y/double(Yres))* (pxSize * pxSize); 
+				break;
+			case 2:
+				// Y^2 Centred at Y/2. 
+        			yV = ( ((y-(Yres/2.0))*(y-(Yres/2.0))/double((Yres/2.0) * (Yres/2.0))) * (pxSize * pxSize));
+        			break;
+		}
+		for (int x=0; x<Xres; x++){
+		
+			groups[x][y].setValue(int(floor(yV+0.5))); 
+		}
+              //  cout << yV << " -> " << int(floor(yV+0.5)) << endl;
+	}	
+}
+
+void View::invert(){
+	for (int x=0; x<Xres; x++){
+		for (int y=0; y<Yres; y++){
+			groups[x][y].invert();
+		}
+	}
 }
 
 char View::output(){

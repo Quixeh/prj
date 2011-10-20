@@ -5,11 +5,11 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = 
-OBJ  = SLM.o $(RES)
-LINKOBJ  = SLM.o $(RES)
-LIBS =  -L"J:/Programs/DevCPP/App/devcpp/lib" -L"E:/prj/sdlTests/1.3/lib" -L"J:/prj/sdlTests/1.3/lib" -L"J:/prj/lib" -L"E:/prj/lib" -lmingw32 -lSDLmain -lSDL -lalpD41  
-INCS =  -I"J:/Programs/DevCPP/App/devcpp/include"  -I"J:/Programs/DevCPP/App/devcpp/include" 
-CXXINCS =  -I"J:/Programs/DevCPP/App/devcpp/lib/gcc/mingw32/3.4.2/include"  -I"J:/Programs/DevCPP/App/devcpp/include/c++/3.4.2/backward"  -I"J:/Programs/DevCPP/App/devcpp/include/c++/3.4.2/mingw32"  -I"J:/Programs/DevCPP/App/devcpp/include/c++/3.4.2"  -I"J:/Programs/DevCPP/App/devcpp/include"  -I"E:/prj/sdlTests/1.3/include"  -I"J:/prj/sdlTests/1.3/include"  -I"J:/Programs/DevCPP/App/devcpp/include" 
+OBJ  = SLM.o helpers/menu.o $(RES)
+LINKOBJ  = SLM.o helpers/menu.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" -L"E:/Documents/Git/prj/lib" -L"J:/prj/lib" -L"E:/prj/lib" -lmingw32 -lSDLmain -lSDL -lalpD41  
+INCS =  -I"C:/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include"  -I"E:/Documents/Git/prj/inc" 
 BIN  = SLM.exe
 CXXFLAGS = $(CXXINCS)  
 CFLAGS = $(INCS)  
@@ -28,3 +28,6 @@ $(BIN): $(OBJ)
 
 SLM.o: SLM.cpp
 	$(CPP) -c SLM.cpp -o SLM.o $(CXXFLAGS)
+
+helpers/menu.o: helpers/menu.cpp
+	$(CPP) -c helpers/menu.cpp -o helpers/menu.o $(CXXFLAGS)

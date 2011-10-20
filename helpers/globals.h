@@ -7,7 +7,7 @@ using namespace std;
 
 bool debugMode = true;
 
-double pxGrpSize = 5;
+double pxGrpSize = 10;
 int pxFillMode = 2;
 
 bool showCtrl = false;
@@ -22,3 +22,5 @@ int Yres = int(1080/pxGrpSize);
 SDL_WindowID wCtrl, wDisp, wDispFull;
 SDL_Renderer *rCtrl, *rDisp, *rDispFull;
 SDL_Texture *tCtrl, *tDisp, *tDispFull;
+
+bool close = false;

@@ -83,6 +83,8 @@
 
 
 
+
+
 // Custom Classes
 
 /* PxGrp.h
@@ -109,8 +111,59 @@
 
 using namespace std;
 
+int intPxGrpSize = int(pxGrpSize); 
+View view(intPxGrpSize);
 
 
+int menu(void* unused){
+	
+	while(!close){
+		int choice;
+		cout << endl << endl << "Main Menu" << endl << "---------" << endl;
+		cin >> choice;
+		int subChoice;
+		double inputValue;
+		switch (choice){ // Console Menu
+			case 1:
+				cout << endl << "Choice 1 - Randomising" << endl;
+				cout << "Please enter decimal chance of pxGrp being on:" << endl;
+				cin >> inputValue;
+				view.randomise(inputValue);
+				cout << "Choice 1 - Outputting" << endl;
+				view.output();
+				break;
+			case 2:
+				cout << endl << "Choice 2 - Applying Xfn" << endl;
+				cout << "1. Greyscale" << endl;
+				cout << "2. X^2" << endl;
+				
+				cin >> subChoice;
+				view.applyXfn(subChoice);
+				cout << "Choice 2 - Outputting" << endl;
+				view.output();
+				break;
+			case 3:
+				cout << endl << "Choice 3 - Applying Yfn" << endl;
+				cout << "1. Greyscale" << endl;
+				cout << "2. Y^2" << endl;
+				
+				cin >> subChoice;
+				view.applyYfn(subChoice);
+				cout << "Choice 3 - Outputting" << endl;
+				view.output();
+				break;
+			case 4: 
+				cout << endl << "Choice 4 - Inverting Current" << endl;
+				view.invert();
+				cout << "Choice 4 - Outputting" << endl;
+				view.output();
+				break;
+			case 0:
+				close = true;
+				break;
+		}
+	}
+}
 
 
 // Main
@@ -119,7 +172,7 @@ int main( int argc, char* args[] ){ // Arguments are SDL Specific
 	
 	srand(0); // Seed random number generator.
      
-// Start SDL Graphical Library. 
+// Start SDL Graphical Library. /
 	SDL_Init(SDL_INIT_EVERYTHING);
 	 
 // Create the windows to display
@@ -219,38 +272,31 @@ int main( int argc, char* args[] ){ // Arguments are SDL Specific
 	* variable, and we will later check it in the loop.  
 	*/
 	
-	bool close = false;
+	
 	SDL_Event event;
 	
 	// Create an integer representation of PxGrpSize purely to stop the compiler moaning. 
-	int intPxGrpSize = int(pxGrpSize); 
+//	int intPxGrpSize = int(pxGrpSize); 
 	
 	// Create the View object that we'll later play with in the program. 
-	cout << "Main: Creating View." << endl;
-	View view(intPxGrpSize);
+//	cout << "Main: Creating View." << endl;
+//	View view(intPxGrpSize);
    	
    	// Console Menu var.
    	int choice;
    	
+   	
+   	
+   	SDL_Thread *menuThread;
+	
+	menuThread = SDL_CreateThread(menu, NULL);   	
+	if ( menuThread == NULL ) {
+	        fprintf(stderr, "Unable to create thread: %s\n", SDL_GetError());
+	}
+   	
 // Program Loop
    	while (!close){
-		cout << endl << endl << "Main Menu" << endl << "---------" << endl;
-		cin >> choice;
-		
-		switch (choice){ // Console Menu
-			case 1:
-				cout << endl << "Choice 1 - Randomising" << endl;
-				view.randomise();
-				cout << "Choice 1 - Outputting" << endl;
-				view.output();
-				break;
-			case 2:
-				cout << endl << "Choice 2 - Applying Xfn" << endl;
-				view.applyXfn();
-				cout << "Choice 2 - Outputting" << endl;
-				view.output();
-				break;
-		}
+		//menu();
 		
 		/*
 		* Time to check if the user has pressed any keys while the SDL window
@@ -260,8 +306,15 @@ int main( int argc, char* args[] ){ // Arguments are SDL Specific
 		
 		while(SDL_PollEvent(&event)) {      
 			switch (event.type){
-				case SDL_QUIT:
-				     close = true;
+				case SDL_WINDOWEVENT:
+					if (event.window.event == SDL_WINDOWEVENT_CLOSE){
+						cout << "Window Manager Close Requested." << endl;
+						close = true;
+					}
+					if (event.window.event == SDL_WINDOWEVENT_RESTORED){
+						if (showDisplay) view.outputToSdl();
+					}
+				     
 				     break;
 				case SDL_KEYDOWN:
 					if (event.key.keysym.sym == SDLK_ESCAPE){

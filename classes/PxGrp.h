@@ -14,6 +14,7 @@ class PxGrp {
 		
 	public:
 		PxGrp ();
+		void invert();
 		void setPxSize(int);
 		int getValue();
 		int getData(int, int);
@@ -40,6 +41,20 @@ void PxGrp::setPxSize(int setSize){
 			data[x][y] = 0;
 		}
 	}
+}
+
+void PxGrp::invert(){
+	value = abs(int(value - pow(size,2)));
+	
+	for (int x=0; x<size; x++){
+		for (int y=0; y<size; y++){
+			if (data[x][y] == 1){
+				data[x][y] = 0;
+			} else {
+				data[x][y] = 1;
+			}
+		}
+	}	
 }
 
 int PxGrp::getValue(){
