@@ -172,7 +172,7 @@ int main( int argc, char* args[] ){ // Arguments are SDL Specific
 	
 	srand(0); // Seed random number generator.
      
-// Start SDL Graphical Library. /
+// Start SDL Graphical Library. ////
 	SDL_Init(SDL_INIT_EVERYTHING);
 	 
 // Create the windows to display

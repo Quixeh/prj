@@ -7,11 +7,11 @@ using namespace std;
 
 bool debugMode = true;
 
-double pxGrpSize = 10;
+double pxGrpSize = 1;
 int pxFillMode = 2;
 
 bool showCtrl = false;
-bool showFullSize = true;
+bool showFullSize = false;
 bool showDisplay = true;
 bool outputBmp = false;
 bool outputFullBmp = false;
