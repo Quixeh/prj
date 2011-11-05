@@ -9,5 +9,7 @@ class AlpDMD {
 		
 	public:
 		AlpDMD();
+		void quit();
+		bool outputView(View);
 };
 

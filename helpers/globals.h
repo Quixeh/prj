@@ -24,3 +24,5 @@ SDL_Renderer *rCtrl, *rDisp, *rDispFull;
 SDL_Texture *tCtrl, *tDisp, *tDispFull;
 
 bool close = false;
+
+#define useDMD = TRUE

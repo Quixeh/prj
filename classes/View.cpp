@@ -429,7 +429,7 @@ bool View::loadBmp() {
     	
     	for(int x=0; x<1920; x++){
 		for(int y=0; y<1080; y++){
-			setPix(x,y,(int)(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255);
+			setPix(x,y,(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255));
 			
 		}
 	}

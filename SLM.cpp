@@ -100,26 +100,38 @@
 #include "classes/View.h"
 
 /* AlpDMD.h
-* Custom Handler for the Alp Device. If not in the lab, comment out this line. 
+* Custom Handler for the Alp Device. If not in the lab, you shouldn't have 
+* the useDMD var defined... see globals.h. Leaving it defined will cause a 
+* CRYPTO-BOX error.  
 */
-//#include "classes/AlpDMD.h" 
+#ifdef useDMD
+#include "classes/AlpDMD.h"
+#endif
 
 // Member Functions
-#include "View.cpp" 
-#include "PxGrp.cpp"
-//#include "AlpDMD.cpp"
+#include "classes/View.cpp" 
+#include "classes/PxGrp.cpp"
+
+#ifdef useDMD
+#include "classes/AlpDMD.cpp"
+#endif
+
+
   
 
 
 
 
-// Namespace
+// Namespace /
 
 using namespace std;
 
 int intPxGrpSize = int(pxGrpSize); 
 View view(intPxGrpSize);
 
+#ifdef useDMD
+AlpDMD dmd;
+#endif
 
 int menu(void* unused){
 	
@@ -177,11 +189,12 @@ int menu(void* unused){
 }
 
 
-// Main //
+// Main ///
 
 int main( int argc, char* args[] ){ // Arguments are SDL Specific
 
 	srand(0); // Seed random number generator.
+	
      
 // Start SDL Graphical Library. 
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -364,6 +377,10 @@ int main( int argc, char* args[] ){ // Arguments are SDL Specific
 		SDL_DestroyRenderer(rDispFull);
 		SDL_DestroyWindow(wDispFull);
 	}
+	
+	#ifdef useDMD
+	dmd.quit();
+	#endif
 	
 	SDL_Quit();
 	exit(0);

@@ -1,4 +1,5 @@
 #include <string>
+#include <cmath>
 
 using namespace std;
 
@@ -24,7 +25,7 @@ void PxGrp::setPxSize(int setSize){
 }
 
 void PxGrp::invert(){
-	value = abs(int(value - pow(size,2)));
+	value = abs(int(value - (size*size)));
 	
 	for (int x=0; x<size; x++){
 		for (int y=0; y<size; y++){
