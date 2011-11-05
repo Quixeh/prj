@@ -7,7 +7,7 @@ using namespace std;
 
 bool debugMode = true;
 
-double pxGrpSize = 1;
+double pxGrpSize = 10;
 int pxFillMode = 2;
 
 bool showCtrl = false;

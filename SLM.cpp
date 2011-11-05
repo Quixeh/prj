@@ -158,6 +158,11 @@ int menu(void* unused){
 				cout << "Choice 4 - Outputting" << endl;
 				view.output();
 				break;
+			case 5: 
+				cout << endl << "Choice 5 - Loading Bitmap" << endl;
+				view.loadBmp();
+				view.output();
+				break;	
 			case 0:
 				close = true;
 				break;
@@ -166,13 +171,13 @@ int menu(void* unused){
 }
 
 
-// Main
+// Main /////
 
 int main( int argc, char* args[] ){ // Arguments are SDL Specific
 	
 	srand(0); // Seed random number generator.
      
-// Start SDL Graphical Library. ////
+// Start SDL Graphical Library. 
 	SDL_Init(SDL_INIT_EVERYTHING);
 	 
 // Create the windows to display

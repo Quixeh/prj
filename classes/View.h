@@ -43,12 +43,14 @@ class View {
 		void invert();
 		View(int);
 		int getPix(int, int);
+		int setPix(int, int, int);
 		char output(); 
 		void randomise(double);
 		bool outputToSdl();
 		bool outputToBmp();
 		bool outputToSdlFull();
 		bool outputToBmpFull();
+		bool loadBmp();
 };
 
 // Member Functions
@@ -91,6 +93,14 @@ int View::getPix(int x, int y){
 	int i = int(x - (h*pxGrpSize));
 	int j = int(y - (k*pxGrpSize));
 	groups[h][k].getData(i,j);
+}
+
+int View::setPix(int x, int y, int v){
+	int h = int(floor((x)/double(pxGrpSize)));
+	int k = int(floor((y)/double(pxGrpSize)));
+	int i = int(x - (h*pxGrpSize));
+	int j = int(y - (k*pxGrpSize));
+	groups[h][k].setData(i,j,v);
 }
 
 void View::applyXfn(int type){
@@ -429,3 +439,37 @@ bool View::outputToBmpFull(){
     	cout << "View::outputToBmp: BMP Output Complete" << endl;
     return f.good();
     }    
+    
+bool View::loadBmp() {
+	
+	// Using the reference http://www.dreamincode.net/forums/topic/26936-how-to-make-sense-of-the-bmp-format/
+	
+	HANDLE f; 
+	f = CreateFile("input.bmp",GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,NULL,NULL);
+
+	BITMAPFILEHEADER bmpFileHeader;
+	BITMAPINFOHEADER bmpInfoHeader;
+	RGBTRIPLE *inputImage;
+	DWORD count;
+
+	ReadFile(f, &bmpFileHeader, sizeof(bmpFileHeader), &count, NULL);
+	ReadFile(f, &bmpInfoHeader, sizeof(bmpInfoHeader), &count, NULL);
+	
+	inputImage = new RGBTRIPLE[bmpInfoHeader.biWidth*bmpInfoHeader.biHeight];		
+    	ReadFile(f, inputImage, sizeof(RGBTRIPLE)*bmpInfoHeader.biWidth*bmpInfoHeader.biHeight, &count,NULL);
+    	
+    	CloseHandle(f);
+    	
+    	for(int x=0; x<1920; x++){
+		for(int y=0; y<1080; y++){
+			setPix(x,y,(int)(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255);
+			
+		}
+	}
+	
+	for (int x=0; x<Xres; x++){
+		for (int y=0; y<Yres; y++){	
+			groups[x][y].checkValue();
+		}
+	}
+}

@@ -18,8 +18,10 @@ class PxGrp {
 		void setPxSize(int);
 		int getValue();
 		int getData(int, int);
+		void setData(int, int, int);
 		void setValue(int);	
 		string getLine(int);
+		void checkValue();
 };
 
 PxGrp::PxGrp (){
@@ -65,6 +67,10 @@ int PxGrp::getData(int x, int y){
 	return data[x][y];
 }
 
+void PxGrp::setData(int x, int y, int v){
+	data[x][y] = v;
+}
+
 string PxGrp::getLine(int i){
 	
 	string rtn;
@@ -80,6 +86,20 @@ string PxGrp::getLine(int i){
 		//cout << data[x][(i)] << " " << rtn << endl;
 	}
 	return rtn;
+}
+
+void PxGrp::checkValue() {
+	int count = 0;
+	
+	for (int y=0; y<size; y++){
+		for (int x=0; x<size; x++){		
+			if (data[x][y] == 1){
+				count++;
+			}
+		}
+	}
+	
+	value = count;
 }
 
 void PxGrp::setValue(int sValue){
