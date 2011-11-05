@@ -171,10 +171,10 @@ int menu(void* unused){
 }
 
 
-// Main /////
+// Main /
 
 int main( int argc, char* args[] ){ // Arguments are SDL Specific
-	
+
 	srand(0); // Seed random number generator.
      
 // Start SDL Graphical Library. 

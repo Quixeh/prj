@@ -442,10 +442,26 @@ bool View::outputToBmpFull(){
     
 bool View::loadBmp() {
 	
+	OPENFILENAME openFileDialog;
+	char fileName[MAX_PATH] = "";
+	
+	ZeroMemory(&openFileDialog, sizeof(openFileDialog));
+	
+	openFileDialog.lStructSize = sizeof(openFileDialog); // SEE NOTE BELOW
+	openFileDialog.lpstrFilter = "Bitmap Files (*.bmp)\0*.bmp\0All Files (*.*)\0*.*\0";
+	openFileDialog.lpstrFile = fileName;
+	openFileDialog.nMaxFile = MAX_PATH;
+	openFileDialog.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY|OFN_ALLOWMULTISELECT;
+	openFileDialog.lpstrDefExt = "bmp";
+	
+	if(!GetOpenFileName(&openFileDialog)){
+		return 1;
+	}
+	
 	// Using the reference http://www.dreamincode.net/forums/topic/26936-how-to-make-sense-of-the-bmp-format/
 	
 	HANDLE f; 
-	f = CreateFile("input.bmp",GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,NULL,NULL);
+	f = CreateFile(fileName,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,NULL,NULL);
 
 	BITMAPFILEHEADER bmpFileHeader;
 	BITMAPINFOHEADER bmpInfoHeader;
