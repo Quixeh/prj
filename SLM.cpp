@@ -102,7 +102,13 @@
 /* AlpDMD.h
 * Custom Handler for the Alp Device. If not in the lab, comment out this line. 
 */
-//#include "classes/AlpDMD.h"
+//#include "classes/AlpDMD.h" 
+
+// Member Functions
+#include "View.cpp" 
+#include "PxGrp.cpp"
+//#include "AlpDMD.cpp"
+  
 
 
 
@@ -171,7 +177,7 @@ int menu(void* unused){
 }
 
 
-// Main /
+// Main //
 
 int main( int argc, char* args[] ){ // Arguments are SDL Specific
 
