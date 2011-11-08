@@ -180,6 +180,10 @@ int menu(void* unused){
 				cout << endl << "Choice 5 - Loading Bitmap" << endl;
 				view.loadBmp();
 				view.output();
+				break;
+			case 6: 
+				cout << endl << "Choice 6 - Outputting to Alp" << endl;
+				dmd.outputView(view);
 				break;	
 			case 0:
 				close = true;
@@ -189,7 +193,7 @@ int menu(void* unused){
 }
 
 
-// Main ///
+// Main ////
 
 int main( int argc, char* args[] ){ // Arguments are SDL Specific
 
