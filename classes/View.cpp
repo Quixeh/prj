@@ -52,6 +52,14 @@ int View::setPix(int x, int y, int v){
 	groups[h][k].setData(i,j,v);
 }
 
+void View::checkValue(){
+	for (int x=0; x<Xres; x++){
+		for (int y=0; y<Yres; y++){
+			groups[x][y].checkValue();
+		}
+	}	
+}
+
 void View::applyXfn(int type){
 
      double xV = 0;
@@ -440,3 +448,4 @@ bool View::loadBmp() {
 		}
 	}
 }
+
