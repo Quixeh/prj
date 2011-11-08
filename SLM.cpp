@@ -99,6 +99,10 @@
 */
 #include "classes/View.h"
 
+/* Sequence.h
+*/
+#include "classes/Sequence.h" 
+
 /* AlpDMD.h
 * Custom Handler for the Alp Device. If not in the lab, you shouldn't have 
 * the useDMD var defined... see globals.h. Leaving it defined will cause a 
@@ -122,12 +126,13 @@
 
 
 
-// Namespace /
+// Namespace ///
 
 using namespace std;
 
-int intPxGrpSize = int(pxGrpSize); 
+
 View view(intPxGrpSize);
+Sequence seq;
 
 #ifdef useDMD
 AlpDMD dmd;
@@ -139,7 +144,7 @@ int menu(void* unused){
 		int choice;
 		cout << endl << endl << "Main Menu" << endl << "---------" << endl;
 		cin >> choice;
-		int subChoice;
+		int subChoice, subSubChoice;
 		double inputValue;
 		switch (choice){ // Console Menu
 			case 1:
@@ -185,6 +190,29 @@ int menu(void* unused){
 				cout << endl << "Choice 6 - Outputting to Alp" << endl;
 				dmd.outputView(view);
 				break;	
+			case 8:
+				cout << endl << "Choice 8 - Editing Sequence" << endl;
+				cout << "1. Add Current View" << endl;
+				cout << "2. Next Frame" << endl;
+				cout << "3. Previous Frame" << endl;
+				cout << "4. Set Timing" << endl;
+				
+				cin >> subChoice;
+				switch (subChoice){
+					case 1: 
+						seq.addFrame(view);
+						break;
+					case 4: 
+						cin >> subSubChoice;
+						seq.setTiming(subSubChoice);
+						break;
+				}
+				break;
+			case 9:
+				cout << endl << "Choice 9 - Playing Sequence" << endl;
+				seq.play();
+				cout << endl << "Choice 9 - Done" << endl;
+				break;
 			case 0:
 				close = true;
 				break;
@@ -198,8 +226,7 @@ int menu(void* unused){
 int main( int argc, char* args[] ){ // Arguments are SDL Specific
 
 	srand(0); // Seed random number generator.
-	
-     
+
 // Start SDL Graphical Library. 
 	SDL_Init(SDL_INIT_EVERYTHING);
 	 
@@ -340,7 +367,7 @@ int main( int argc, char* args[] ){ // Arguments are SDL Specific
 						close = true;
 					}
 					if (event.window.event == SDL_WINDOWEVENT_RESTORED){
-						if (showDisplay) view.outputToSdl();
+					//	if (showDisplay) view.outputToSdl();
 					}
 				     
 				     break;

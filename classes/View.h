@@ -51,6 +51,8 @@ class View {
 		bool outputToSdlFull();
 		bool outputToBmpFull();
 		bool loadBmp();
+		void checkValue();
+		
 };
 
 
