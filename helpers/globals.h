@@ -13,7 +13,7 @@ int pxFillMode = 2;
 int intPxGrpSize = int(pxGrpSize); 
 
 bool showCtrl = false;
-bool showFullSize = false;
+bool showFullSize = true;
 bool showDisplay = true;
 bool outputBmp = true;
 bool outputFullBmp = false;
@@ -27,4 +27,4 @@ SDL_Texture *tCtrl, *tDisp, *tDispFull;
 
 bool close = false;
 
-//#define useDMD = TRUE
+#define useDMD = TRUE
