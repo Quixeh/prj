@@ -13,7 +13,7 @@ class PxGrp {
 		int** data;
 		
 	public:
-		PxGrp ();
+		PxGrp();
 		void invert();
 		void setPxSize(int);
 		int getValue();

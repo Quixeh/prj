@@ -13,7 +13,7 @@ int pxFillMode = 2;
 int intPxGrpSize = int(pxGrpSize); 
 
 bool showCtrl = false;
-bool showFullSize = true;
+bool showFullSize = false;
 bool showDisplay = true;
 bool outputBmp = true;
 bool outputFullBmp = false;

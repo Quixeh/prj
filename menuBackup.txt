@@ -1,0 +1,83 @@
+int menu(void* unused){
+	
+	while(!close){
+		int choice;
+		cout << endl << endl << "Main Menu" << endl << "---------" << endl;
+		cin >> choice;
+		int subChoice, subSubChoice;
+		double inputValue;
+		switch (choice){ // Console Menu
+			case 1:
+				cout << endl << "Choice 1 - Randomising" << endl;
+				cout << "Please enter decimal chance of pxGrp being on:" << endl;
+				cin >> inputValue;
+				view.randomise(inputValue);
+				cout << "Choice 1 - Outputting" << endl;
+				view.output();
+				break;
+			case 2:
+				cout << endl << "Choice 2 - Applying Xfn" << endl;
+				cout << "1. Greyscale" << endl;
+				cout << "2. X^2" << endl;
+				
+				cin >> subChoice;
+				view.applyXfn(subChoice);
+				cout << "Choice 2 - Outputting" << endl;
+				view.output();
+				break;
+			case 3:
+				cout << endl << "Choice 3 - Applying Yfn" << endl;
+				cout << "1. Greyscale" << endl;
+				cout << "2. Y^2" << endl;
+				
+				cin >> subChoice;
+				view.applyYfn(subChoice);
+				cout << "Choice 3 - Outputting" << endl;
+				view.output();
+				break;
+			case 4: 
+				cout << endl << "Choice 4 - Inverting Current" << endl;
+				view.invert();
+				cout << "Choice 4 - Outputting" << endl;
+				view.output();
+				break;
+			case 5: 
+				cout << endl << "Choice 5 - Loading Bitmap" << endl;
+				view.loadBmp();
+				view.output();
+				break;
+			case 6: 
+				cout << endl << "Choice 6 - Outputting to Alp" << endl;
+				#ifdef useDMD
+				dmd.outputView(view);
+				#endif				
+				break;	
+			case 8:
+				cout << endl << "Choice 8 - Editing Sequence" << endl;
+				cout << "1. Add Current View" << endl;
+				cout << "2. Next Frame" << endl;
+				cout << "3. Previous Frame" << endl;
+				cout << "4. Set Timing" << endl;
+				
+				cin >> subChoice;
+				switch (subChoice){
+					case 1: 
+						seq.addFrame(view);
+						break;
+					case 4: 
+						cin >> subSubChoice;
+						seq.setTiming(subSubChoice);
+						break;
+				}
+				break;
+			case 9:
+				cout << endl << "Choice 9 - Playing Sequence" << endl;
+				seq.play();
+				cout << endl << "Choice 9 - Done" << endl;
+				break;
+			case 0:
+				close = true;
+				break;
+		}
+	}
+}

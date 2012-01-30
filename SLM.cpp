@@ -57,7 +57,8 @@
 * Allows us to know what the system time is. 
 */
 #include <time.h>
-
+#include <sstream>
+#include <vector>
 
 
 
@@ -126,7 +127,7 @@
 
 
 
-// Namespace /
+// Namespace
 
 using namespace std;
 
@@ -139,89 +140,158 @@ AlpDMD dmd;
 #endif
 
 int menu(void* unused){
+	cout << "\n\nMain Menu\n---------\n";
 	
 	while(!close){
-		int choice;
-		cout << endl << endl << "Main Menu" << endl << "---------" << endl;
-		cin >> choice;
-		int subChoice, subSubChoice;
-		double inputValue;
-		switch (choice){ // Console Menu
-			case 1:
-				cout << endl << "Choice 1 - Randomising" << endl;
-				cout << "Please enter decimal chance of pxGrp being on:" << endl;
-				cin >> inputValue;
-				view.randomise(inputValue);
-				cout << "Choice 1 - Outputting" << endl;
-				view.output();
-				break;
-			case 2:
-				cout << endl << "Choice 2 - Applying Xfn" << endl;
-				cout << "1. Greyscale" << endl;
-				cout << "2. X^2" << endl;
+
+		string choice;
+		char *cstr_choice, *currentCommand, *currentLine;
+		string ccStr, cwStr;
+		
+		cout << "\n>> ";
+		getline(cin, choice);
 				
-				cin >> subChoice;
-				view.applyXfn(subChoice);
-				cout << "Choice 2 - Outputting" << endl;
-				view.output();
-				break;
-			case 3:
-				cout << endl << "Choice 3 - Applying Yfn" << endl;
-				cout << "1. Greyscale" << endl;
-				cout << "2. Y^2" << endl;
+		vector<string> commandLines;
+		
+		currentLine = new char [choice.size()+1];
+		strcpy(currentLine, choice.c_str());
+					
+		char * lines;
+		lines = strtok (currentLine,";");
+		while (lines != NULL){
+		    commandLines.push_back(lines);
+		    lines = strtok (NULL, ";");
+		}
+		
+		for (int i=0;i<commandLines.size();i++){
+			currentCommand = new char [commandLines[i].size()+1];
+			string tmp = commandLines[i];
 				
-				cin >> subChoice;
-				view.applyYfn(subChoice);
-				cout << "Choice 3 - Outputting" << endl;
-				view.output();
-				break;
-			case 4: 
-				cout << endl << "Choice 4 - Inverting Current" << endl;
-				view.invert();
-				cout << "Choice 4 - Outputting" << endl;
-				view.output();
-				break;
-			case 5: 
-				cout << endl << "Choice 5 - Loading Bitmap" << endl;
-				view.loadBmp();
-				view.output();
-				break;
-			case 6: 
-				cout << endl << "Choice 6 - Outputting to Alp" << endl;
-				dmd.outputView(view);
-				break;	
-			case 8:
-				cout << endl << "Choice 8 - Editing Sequence" << endl;
-				cout << "1. Add Current View" << endl;
-				cout << "2. Next Frame" << endl;
-				cout << "3. Previous Frame" << endl;
-				cout << "4. Set Timing" << endl;
+			if (tmp[0] == ' '){
+				tmp = commandLines[i].erase(0,1);
+				strcpy(currentCommand, tmp.c_str());
+			} else {
+				strcpy(currentCommand, commandLines[i].c_str());
+			}
+						
+			//cout << "\nCurrent Command: " << currentCommand << endl;
 				
-				cin >> subChoice;
-				switch (subChoice){
-					case 1: 
-						seq.addFrame(view);
-						break;
-					case 4: 
-						cin >> subSubChoice;
-						seq.setTiming(subSubChoice);
-						break;
-				}
-				break;
-			case 9:
-				cout << endl << "Choice 9 - Playing Sequence" << endl;
-				seq.play();
-				cout << endl << "Choice 9 - Done" << endl;
-				break;
-			case 0:
+			if (!strcmp(currentCommand,"exit")){
 				close = true;
-				break;
+			} 
+			else if (!strcmp(currentCommand,"display")){
+				// Place single word commands in else-if statements like this.
+				view.output();
+			}
+			else if (!strcmp(currentCommand,"invert")){
+				// Place single word commands in else-if statements like this.
+				view.invert();
+			}
+			else {  // At this point, the command probably includes more than one word.
+		
+				vector<string> commandList;
+							
+				char * commands;
+				commands = strtok (currentCommand," ");
+				while (commands != NULL){
+				    commandList.push_back(commands);
+				    commands = strtok (NULL, " ");
+				}
+			
+			//	for (int i=0;i<commandList.size();i++)
+			//		cout << i << ": " << commandList[i] << ".\n";
+					
+				if (commandList[0] == "apply"){
+					if (commandList.size() >= 2){
+						if (commandList[1] == "xgrad"){
+							view.applyXfn(1);
+						} 
+						else if (commandList[1] == "ygrad"){
+							view.applyYfn(1);
+						}
+						else if (commandList[1] == "x2"){
+							view.applyXfn(2);
+						}
+						else if (commandList[1] == "y2"){
+							view.applyYfn(2);
+						}
+						else {
+							cout << "Unknown Command: " << commandList[0] << " " <<commandList[1] << "\n\n";
+						}	
+					} else {
+						cout << "Syntax Error: Apply requires more than one arg\n\n";
+					}
+				} 
+				else if (commandList[0] == "set"){
+					if (commandList.size() >= 2){
+						if (commandList[1] == "size"){
+							
+							pxGrpSize = atoi(commandList[2].c_str());
+							Xres = int(1920/pxGrpSize);
+							Yres = int(1080/pxGrpSize);
+							view.resize(pxGrpSize);
+							if (showDisplay){
+								SDL_SetWindowSize(wDisp, Xres, Yres);
+								SDL_DestroyRenderer(rDisp);
+								rDisp = SDL_CreateRenderer(wDisp, -1, 0);
+							}
+							
+							view.output();
+						}
+						else if (commandList[1] == "refresh"){
+							
+						}
+					} 
+					else {
+						cout << "Syntax Error: Set requires more than one arg\n\n";
+					}
+				}
+				else if (commandList[0] == "load"){
+					if (commandList.size() >= 2){
+					}
+					else {
+						view.loadBmp();
+						view.output();	
+					}
+				}
+				else if (commandList[0] == "play"){
+					if (commandList.size() >= 2){
+					}
+					else {
+						cout << "\nOutputting to Alp\n";
+						#ifdef useDMD
+						dmd.outputView(view);
+						#endif				
+						break;	
+					}
+				}
+				else if (commandList[0] == "help"){
+					if (commandList.size() >= 2){
+						if (commandList[1] == "apply"){
+						
+						}
+						else if (commandList[1] == "set"){
+							
+						}
+					} 
+					else {
+						cout << "\n\nHelp menu; type help <command> for more details\n\n"
+						<< "exit - quit the program\ndisplay - output current view to screen\n"
+						<< "play - send sequence/image to SLM\ninvert - swap black & white\n"
+						<< "load - import an image or sequence\n"
+						<< "apply - apply a function to the image\nset - change program settings\n\n";
+					}					
+				}
+				else {
+					cout << "Unknown Command: " << commandList[0] << "\n\n";
+				}					
+			}
 		}
 	}
 }
 
 
-// Main ////
+// Main
 
 int main( int argc, char* args[] ){ // Arguments are SDL Specific
 
@@ -263,7 +333,7 @@ int main( int argc, char* args[] ){ // Arguments are SDL Specific
 	*/	
 	
 	if (showCtrl) rCtrl = SDL_CreateRenderer(wCtrl, -1, 0);
-	if (showDisplay)rDisp = SDL_CreateRenderer(wDisp, -1, 0);
+	if (showDisplay) rDisp = SDL_CreateRenderer(wDisp, -1, 0);
 	if (showFullSize) rDispFull = SDL_CreateRenderer(wDispFull, -1, 0);
 	 
 // Textures

@@ -42,6 +42,7 @@ class View {
 		void applyYfn(int);
 		void invert();
 		View(int);
+		void resize(int);
 		int getPix(int, int);
 		int setPix(int, int, int);
 		char output(); 
