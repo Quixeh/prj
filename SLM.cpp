@@ -241,6 +241,87 @@ int menu(void* unused){
 						else if (commandList[1] == "refresh"){
 							
 						}
+						else if (commandList[1] == "verbose"){
+							if (commandList.size() >= 2){
+								if (commandList[2] == "on"){
+									verbose = true;
+								} 
+								else if (commandList[2] == "off"){
+									verbose = false;
+								}
+								else {
+									cout << "Unknown Setting: " << commandList[2] << " - Try on or off.\n\n";
+								}
+							}
+							else {
+								cout << "Syntax Error: Set Output requires more than one args\n\n";
+							}
+						}
+						else if (commandList[1] == "output"){
+							if (commandList.size() >= 3){
+								if (commandList[2] == "bitmap"){
+									if (commandList[3] == "on"){
+										outputFullBmp = true;
+									} 
+									else if (commandList[3] == "off"){
+										outputFullBmp = false;
+									}
+									else {
+										cout << "Unknown Setting: " << commandList[3] << " - Try on or off.\n\n";
+									}
+								}
+								else if (commandList[2] == "sbitmap"){
+									if (commandList[3] == "on"){
+										outputBmp = true;
+									} 
+									else if (commandList[3] == "off"){
+										outputBmp = false;
+									}
+									else {
+										cout << "Unknown Setting: " << commandList[3] << " - Try on or off.\n\n";
+									}
+								}
+								else if (commandList[2] == "control"){
+									if (commandList[3] == "on"){
+										showCtrl = true;
+									} 
+									else if (commandList[3] == "off"){
+										showCtrl = false;
+									}
+									else {
+										cout << "Unknown Setting: " << commandList[3] << " - Try on or off.\n\n";
+									}
+								}
+								else if (commandList[2] == "display"){
+									if (commandList[3] == "on"){
+										showDisplay = true;
+									} 
+									else if (commandList[3] == "off"){
+										showDisplay = false;
+									}
+									else {
+										cout << "Unknown Setting: " << commandList[3] << " - Try on or off.\n\n";
+									}
+								}
+								else if (commandList[2] == "map"){
+									if (commandList[3] == "on"){
+										showFullSize = true;
+									} 
+									else if (commandList[3] == "off"){
+										showFullSize = false;
+									}
+									else {
+										cout << "Unknown Setting: " << commandList[3] << " - Try on or off.\n\n";
+									}
+								}
+								else {
+									cout << "Unknown Command: " << commandList[0] << " " <<commandList[1] << " " <<commandList[2] << "\n\n";
+								}
+							}
+							else {
+								cout << "Syntax Error: Set Output requires more than two args\n\n";
+							}
+						}
 					} 
 					else {
 						cout << "Syntax Error: Set requires more than one arg\n\n";
@@ -324,7 +405,7 @@ int main( int argc, char* args[] ){ // Arguments are SDL Specific
 	if (showDisplay) wDisp = SDL_CreateWindow("DMD Display",100,100,Xres,Yres,SDL_WINDOW_SHOWN);
 	if (showFullSize) wDispFull = SDL_CreateWindow("DMD Fullsize",1680,0,1920,1080,SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
 	
-	if (debugMode) cout << "Scaled Xres: " << Xres << " Yres: " << Yres << endl;
+	if (verbose) cout << "Scaled Xres: " << Xres << " Yres: " << Yres << endl;
 	
 // Renderers
 	/*

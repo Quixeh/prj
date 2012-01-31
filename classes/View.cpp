@@ -136,7 +136,7 @@ void View::invert(){
 
 char View::output(){
 	
-//	cout << "View::output: Commencing Output" << endl;
+	if (verbose) cout << "View::output: Commencing Output" << endl;
 	
 	if (showFullSize) outputToSdlFull();
 	if (showDisplay) outputToSdl(); 
@@ -144,7 +144,7 @@ char View::output(){
 	if (outputBmp) outputToBmp(); 
   
    
-//	cout << "View::output: Output Complete" << endl;
+	if (verbose) cout << "View::output: Output Complete" << endl;
 }
 
 Uint32  View::gPixel( SDL_Surface *surface, int x, int y ){
@@ -158,15 +158,15 @@ void View::sPixel( SDL_Surface *surface, int x, int y, Uint32 pixel ){
 }
 
 bool View::outputToSdl(){
-//	cout << "View::outputToSdl: Commencing SDL Output" << endl;
-//	cout << "View::outputToSdl: Xres " << Xres << " Yres " << Yres << endl;  
-//	cout << "View::outputToSdl: Locking Texture" << endl;   
+	if (verbose) cout << "View::outputToSdl: Commencing SDL Output" << endl;
+	if (verbose) cout << "View::outputToSdl: Xres " << Xres << " Yres " << Yres << endl;  
+	//if (verbose) cout << "View::outputToSdl: Locking Texture" << endl;   
 	//SDL_LockTexture(tDisp, NULL, &pixels, &pitch);
 	
 	int min_value = 0;
 	int max_value = pxSize * pxSize;
      	
-//	cout << "View::outputToSdl: Cycling..." << endl;
+	if (verbose) cout << "View::outputToSdl: Cycling..." << endl;
 	
 	SDL_Surface *surf;
 	
@@ -199,20 +199,20 @@ bool View::outputToSdl(){
 	
 	newDisplay = SDL_CreateTextureFromSurface(rDisp, surf);
 
-//	cout << "View::outputToSdl: Unlocking Texture" << endl;
+	if (verbose) cout << "View::outputToSdl: Unlocking Texture" << endl;
 	//SDL_UnlockTexture(tDisp);
 
 	SDL_RenderClear(rDisp);
 	SDL_RenderCopy(rDisp, newDisplay, NULL, NULL);
 	SDL_RenderPresent(rDisp);
     
-//	cout << "View::outputToSdl: SDL Output Complete" << endl;
+	if (verbose) cout << "View::outputToSdl: SDL Output Complete" << endl;
 }
 
 bool View::outputToSdlFull(){
-//	cout << "View::outputToSdlFull: Commencing Full SDL Output" << endl;
+	if (verbose) cout << "View::outputToSdlFull: Commencing Full SDL Output" << endl;
 
-//	cout << "View::outputToSdlFull: Locking Texture" << endl;   
+	if (verbose) cout << "View::outputToSdlFull: Locking Texture" << endl;   
 	//SDL_LockTexture(tDisp, NULL, &pixels, &pitch);
 	
 	int min_value = 0;
@@ -238,7 +238,7 @@ bool View::outputToSdlFull(){
 	
 	SDL_LockSurface(surf);
 	
-//	cout << "View::outputToSdlFull: Cycling..." << endl;
+	if (verbose) cout << "View::outputToSdlFull: Cycling..." << endl;
 	//cout << Xres << " " << Yres << endl;
 	
         for (int y=0; y<1080; y++){
@@ -257,21 +257,21 @@ bool View::outputToSdlFull(){
 	
 	newDisplay = SDL_CreateTextureFromSurface(rDispFull, surf);
 
-//	cout << "View::outputToSdlFull: Unlocking Texture" << endl;
+	if (verbose) cout << "View::outputToSdlFull: Unlocking Texture" << endl;
 	//SDL_UnlockTexture(tDisp);
 
 	SDL_RenderClear(rDispFull);
 	SDL_RenderCopy(rDispFull, newDisplay, NULL, NULL);
 	SDL_RenderPresent(rDispFull);
     
-//	cout << "View::outputToSdlFull: Full SDL Output Complete" << endl;
+	if (verbose) cout << "View::outputToSdlFull: Full SDL Output Complete" << endl;
 }
 
 bool View::outputToBmp(){
 	int min_value = 0;
 	int max_value = pxSize * pxSize;
      
-//	cout << "View::outputToBmp: Commencing BMP Output" << endl;
+	if (verbose) cout << "View::outputToBmp: Commencing BMP Output" << endl;
      
 	// Open the output BMP file
 	std::ofstream f( "output.bmp", std::ios::out | std::ios::trunc | std::ios::binary );
@@ -338,7 +338,7 @@ bool View::outputToBmp(){
       }
 
     // All done!
-//    	cout << "View::outputToBmp: BMP Output Complete" << endl;
+	if (verbose) cout << "View::outputToBmp: BMP Output Complete" << endl;
     return f.good();
     }    
 
@@ -346,7 +346,7 @@ bool View::outputToBmpFull(){
 	int min_value = 0;
 	int max_value = pxSize * pxSize;
      
-//	cout << "View::outputToBmpFull: Commencing Full BMP Output" << endl;
+	if (verbose) cout << "View::outputToBmpFull: Commencing Full BMP Output" << endl;
      
 	// Open the output BMP file
 	std::ofstream f( "outputFull.bmp", std::ios::out | std::ios::trunc | std::ios::binary );
@@ -402,7 +402,7 @@ bool View::outputToBmpFull(){
         red = int(val);
         green = int(val);
         blue = int(val);
-       // std::cout << y-1 << " " << x <<  " " << groups[ x][ y-1].getValue() << " " << int(val) << std::endl;
+	//std::cout << y-1 << " " << x <<  " " << groups[ x][ y-1].getValue() << " " << int(val) << std::endl;
 
         f.put( static_cast <char> (blue)  )
          .put( static_cast <char> (green) )
@@ -413,7 +413,7 @@ bool View::outputToBmpFull(){
       }
 
     // All done!
-//    	cout << "View::outputToBmp: BMP Output Complete" << endl;
+	if (verbose) cout << "View::outputToBmp: BMP Output Complete" << endl;
     return f.good();
     }    
     
