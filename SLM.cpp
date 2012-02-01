@@ -215,6 +215,13 @@ int menu(void* unused){
 						else if (commandList[1] == "y2"){
 							view.applyYfn(2);
 						}
+						else if (commandList[1] == "black"){
+							view.randomise(0);
+						}
+						else if (commandList[1] == "white"){
+							view.randomise(0);
+							view.invert();
+						}
 						else {
 							cout << "Unknown Command: " << commandList[0] << " " <<commandList[1] << "\n\n";
 						}	
@@ -374,9 +381,16 @@ int menu(void* unused){
 
 // Main
 
-int main( int argc, char* args[] ){ // Arguments are SDL Specific
+int main(int argc, char* args[]){ // Arguments are SDL Specific
 
 	srand(0); // Seed random number generator.
+	
+	if (verbose){
+		cout << "Command Line Arguments: " << argc << endl; 
+		for(int i = 0; i < argc; i++){
+	      		cout << "Argument " << i << " = " << args[i] << endl;
+		}
+	}
 
 // Start SDL Graphical Library. 
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -450,7 +464,7 @@ int main( int argc, char* args[] ){ // Arguments are SDL Specific
 		SDL_LockTexture(tDisp, NULL, &pixels, &pitch); 
 		
 		// Set the display to a default colour...	
-		SDL_Color colourDefault = {115,115,115};
+		SDL_Color colourDefault = {0,0,0};
 	    
 		for (int x=0; x<50; x++){ // Foreach column
 			pix = (Uint32*)((Uint8*)pixels + x * pitch); // Grab those pixles
@@ -514,11 +528,11 @@ int main( int argc, char* args[] ){ // Arguments are SDL Specific
 			switch (event.type){
 				case SDL_WINDOWEVENT:
 					if (event.window.event == SDL_WINDOWEVENT_CLOSE){
-						cout << "Window Manager Close Requested." << endl;
+						if (verbose) cout << "\n\nWindow Manager Close Requested." << endl;
 						close = true;
 					}
 					if (event.window.event == SDL_WINDOWEVENT_RESTORED){
-					//	if (showDisplay) view.outputToSdl();
+						if (showDisplay) view.outputToSdl();
 					}
 				     
 				     break;

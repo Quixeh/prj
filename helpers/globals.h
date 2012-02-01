@@ -28,4 +28,4 @@ SDL_Texture *tCtrl, *tDisp, *tDispFull;
 
 bool close = false;
 
-#define useDMD = TRUE
+//#define useDMD = TRUE
