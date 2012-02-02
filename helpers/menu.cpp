@@ -333,11 +333,15 @@ int menu(void* unused){
 						}
 					} 
 					else {
-						cout << "\n\nHelp menu; type help <command> for more details\n\n"
-						<< "exit - quit the program\ndisplay - output current view to screen\n"
-						<< "play - send sequence/image to SLM\ninvert - swap black & white\n"
-						<< "load - import an image or sequence\n dmd (on/off) - Turn DMD on or off.\n"
-						<< "apply - apply a function to the image\nset - change program settings\n\n";
+						cout << "\n\nHelp Menu. Type help <command> for more details.\n() indicates required fields, <> indicates optional\n\n"
+						<< "exit                   - Quit the program\n"
+						<< "display                - Update the GUI\n"
+						<< "invert                 - Swap black & white pixels\n"
+						<< "play <mode>            - Send sequence/image to SLM\n" 
+						<< "load <filename>        - Import an image or sequence\n" 
+						<< "dmd (on/off)           - Turn DMD on or off.\n"
+						<< "apply (function)       - Apply a function to the image\n"
+						<< "set (option) <value>   - Change program settings\n\n";
 					}					
 				}
 				else {
