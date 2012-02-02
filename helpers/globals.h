@@ -19,7 +19,7 @@ bool showFullSize = false;
 bool showDisplay = true;
 bool outputBmp = false;
 bool outputFullBmp = false;
-bool verbose =  true;
+bool verbose =  false;
 
 int Xres = int(1920/pxGrpSize);
 int Yres = int(1080/pxGrpSize);

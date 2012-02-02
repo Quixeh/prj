@@ -5,11 +5,12 @@ class AlpDMD {
 		ALP_ID deviceID;
 		long dmdType;
 		long state;
-		int init();
-		
+		bool inUse;
+				
 	public:
 		AlpDMD();
+		int init();
 		void quit();
-		bool outputView(View);
+		bool outputView(View, int);
 };
 

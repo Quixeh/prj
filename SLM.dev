@@ -1,7 +1,7 @@
 [Project]
 FileName=SLM.dev
 Name=SLM
-UnitCount=7
+UnitCount=6
 Type=1
 Ver=1
 ObjFiles=
@@ -97,17 +97,17 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit6]
-FileName=helpers\menu.cpp
+[Unit7]
+FileName=classes\Sequence.h
 CompileCpp=1
-Folder=helpers
+Folder=classes
 Compile=1
 Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit7]
+[Unit6]
 FileName=classes\Sequence.h
 CompileCpp=1
 Folder=classes

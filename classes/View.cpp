@@ -418,25 +418,64 @@ bool View::outputToBmpFull(){
     }    
     
 bool View::loadBmp() {
-	
+
 	// Using the reference http://www.winprog.org/tutorial/app_two.html
-	
+
 	OPENFILENAME openFileDialog;
 	char fileName[MAX_PATH] = "";
-	
+
 	ZeroMemory(&openFileDialog, sizeof(openFileDialog));
-	
+
 	openFileDialog.lStructSize = sizeof(openFileDialog); 
 	openFileDialog.lpstrFilter = "Bitmap Files (*.bmp)\0*.bmp\0All Files (*.*)\0*.*\0";
 	openFileDialog.lpstrFile = fileName;
 	openFileDialog.nMaxFile = MAX_PATH;
 	openFileDialog.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
 	openFileDialog.lpstrDefExt = "bmp";
-	
+		
 	if(!GetOpenFileName(&openFileDialog)){
 		return 1;
 	}
+
+	// Using the reference http://www.dreamincode.net/forums/topic/26936-how-to-make-sense-of-the-bmp-format/
 	
+	HANDLE f; 
+	f = CreateFile(fileName,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,NULL,NULL);
+
+	BITMAPFILEHEADER bmpFileHeader;
+	BITMAPINFOHEADER bmpInfoHeader;
+	RGBTRIPLE *inputImage;
+	DWORD count;
+
+	ReadFile(f, &bmpFileHeader, sizeof(bmpFileHeader), &count, NULL);
+	ReadFile(f, &bmpInfoHeader, sizeof(bmpInfoHeader), &count, NULL);
+	
+	inputImage = new RGBTRIPLE[bmpInfoHeader.biWidth*bmpInfoHeader.biHeight];		
+    	ReadFile(f, inputImage, sizeof(RGBTRIPLE)*bmpInfoHeader.biWidth*bmpInfoHeader.biHeight, &count,NULL);
+    	
+    	CloseHandle(f);
+    	
+    	for(int x=0; x<1920; x++){
+		for(int y=0; y<1080; y++){
+			setPix(x,y,(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255));
+			
+		}
+	}
+	
+	for (int x=0; x<Xres; x++){
+		for (int y=0; y<Yres; y++){	
+			groups[x][y].checkValue();
+		}
+	}
+}
+
+bool View::loadBmpSpecific(string fileNameStr) {
+	// Using the reference http://www.winprog.org/tutorial/app_two.html
+	char fileName[MAX_PATH] = "";
+	
+	strcpy(fileName, fileNameStr.c_str());
+	if (verbose) cout << "Loading Specified File: \"" << fileName << "\"\n";
+
 	// Using the reference http://www.dreamincode.net/forums/topic/26936-how-to-make-sense-of-the-bmp-format/
 	
 	HANDLE f; 

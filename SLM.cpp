@@ -1,6 +1,6 @@
 /** SLM Control Program
 *
-* Created for the DLi Discovery 4000 with the .95' 1920x1080 DMD attached.
+* Created for the DLi Discovery 4100 with the .95' 1920x1080 DMD attached.
 *
 * The DMD is essentially an array of mirrors - so we have a digital system where
 * a pixel can either be on or off. To introduce greyscale and intensity level
@@ -12,14 +12,14 @@
 * the pixels are grouped into 'PxGrp' classes. These deal with the individual 
 * mirrors on the DMD. 
 *
-* @author Andy Blackmore <axb803@bham.ac.uk>
+* @author Andy Blackmore <axb803@bham.ac.uk> 
 *
 */
 
 
 
 
-// Standard C++ Includes
+// Standard C++ Includes 
 
 /* TCHAR.h
 * Includes the TCHAR variable type, used to build single-byte,
@@ -113,7 +113,7 @@
 #include "classes/AlpDMD.h"
 #endif
 
-// Member Functions
+// Member Functions 
 #include "classes/View.cpp" 
 #include "classes/PxGrp.cpp"
 
@@ -131,282 +131,16 @@
 
 using namespace std;
 
-
 View view(intPxGrpSize);
 Sequence seq;
+
 
 #ifdef useDMD
 AlpDMD dmd;
 #endif
 
-int menu(void* unused){
-	cout << "\n\nMain Menu\n---------\n";
-	
-	vector<string> argCommands;
-		
-	if (args.size() > 1){
-		for(int i=1; i < args.size(); i++){
-			string currentArgument = args[i];
-			if (currentArgument.find("run") == 0){ 
-				if (verbose) cout << "Run Argument Found...\n";
-				currentArgument.erase(0,5);
-				int n = currentArgument.size();
-				currentArgument.erase(n-1,n);
-				argCommands.push_back(currentArgument);
-			} 
-			else if (currentArgument.find("file") == 0){ 
-				if (verbose) cout << "File Argument Found...\n";
-				currentArgument.erase(0,6);
-				int n = currentArgument.size();
-				currentArgument.erase(n-1,n);
-				cout << currentArgument << endl;
-			}
-			else {
-				cout << "Error: Unknown command line argument.\n";
-			}
-		}
-	}
-	
-	while(!close){
-		
-		string choice;
-		char *cstr_choice, *currentCommand, *currentLine;
-		string ccStr, cwStr;
-		
-		if (argCommands.size() > 0){
-			choice = argCommands[1];
-			argCommands.erase(argCommands.begin());	
-		} else {
-			cout << "\n>> ";
-			getline(cin, choice);
-		}
-				
-		vector<string> commandLines;
-		
-		currentLine = new char [choice.size()+1];
-		strcpy(currentLine, choice.c_str());
-					
-		char * lines;
-		lines = strtok (currentLine,";");
-		while (lines != NULL){
-		    commandLines.push_back(lines);
-		    lines = strtok (NULL, ";");
-		}
-		
-		for (int i=0;i<commandLines.size();i++){
-			currentCommand = new char [commandLines[i].size()+1];
-			string tmp = commandLines[i];
-				
-			if (tmp[0] == ' '){
-				tmp = commandLines[i].erase(0,1);
-				strcpy(currentCommand, tmp.c_str());
-			} else {
-				strcpy(currentCommand, commandLines[i].c_str());
-			}
-						
-			if (verbose) cout << "\nCurrent Command: " << currentCommand << endl;
-				
-			if (!strcmp(currentCommand,"exit")){
-				close = true;
-			} 
-			else if (!strcmp(currentCommand,"display")){
-				// Place single word commands in else-if statements like this.
-				view.output();
-			}
-			else if (!strcmp(currentCommand,"invert")){
-				// Place single word commands in else-if statements like this.
-				view.invert();
-			}
-			else {  // At this point, the command probably includes more than one word.
-		
-				vector<string> commandList;
-							
-				char * commands;
-				commands = strtok (currentCommand," ");
-				while (commands != NULL){
-				    commandList.push_back(commands);
-				    commands = strtok (NULL, " ");
-				}
-			
-			//	for (int i=0;i<commandList.size();i++)
-			//		cout << i << ": " << commandList[i] << ".\n";
-					
-				if (commandList[0] == "apply"){
-					if (commandList.size() >= 2){
-						if (commandList[1] == "xgrad"){
-							view.applyXfn(1);
-						} 
-						else if (commandList[1] == "ygrad"){
-							view.applyYfn(1);
-						}
-						else if (commandList[1] == "x2"){
-							view.applyXfn(2);
-						}
-						else if (commandList[1] == "y2"){
-							view.applyYfn(2);
-						}
-						else if (commandList[1] == "black"){
-							view.randomise(0);
-						}
-						else if (commandList[1] == "white"){
-							view.randomise(0);
-							view.invert();
-						}
-						else {
-							cout << "Unknown Command: " << commandList[0] << " " <<commandList[1] << "\n\n";
-						}	
-					} else {
-						cout << "Syntax Error: Apply requires more than one arg\n\n";
-					}
-				} 
-				else if (commandList[0] == "set"){
-					if (commandList.size() >= 2){
-						if (commandList[1] == "size"){
-							
-							pxGrpSize = atoi(commandList[2].c_str());
-							Xres = int(1920/pxGrpSize);
-							Yres = int(1080/pxGrpSize);
-							view.resize(pxGrpSize);
-							if (showDisplay){
-								SDL_SetWindowSize(wDisp, Xres, Yres);
-								SDL_DestroyRenderer(rDisp);
-								rDisp = SDL_CreateRenderer(wDisp, -1, 0);
-							}
-							
-							view.output();
-						}
-						else if (commandList[1] == "refresh"){
-							
-						}
-						else if (commandList[1] == "verbose"){
-							if (commandList.size() >= 2){
-								if (commandList[2] == "on"){
-									verbose = true;
-								} 
-								else if (commandList[2] == "off"){
-									verbose = false;
-								}
-								else {
-									cout << "Unknown Setting: " << commandList[2] << " - Try on or off.\n\n";
-								}
-							}
-							else {
-								cout << "Syntax Error: Set Output requires more than one args\n\n";
-							}
-						}
-						else if (commandList[1] == "output"){
-							if (commandList.size() >= 3){
-								if (commandList[2] == "bitmap"){
-									if (commandList[3] == "on"){
-										outputFullBmp = true;
-									} 
-									else if (commandList[3] == "off"){
-										outputFullBmp = false;
-									}
-									else {
-										cout << "Unknown Setting: " << commandList[3] << " - Try on or off.\n\n";
-									}
-								}
-								else if (commandList[2] == "sbitmap"){
-									if (commandList[3] == "on"){
-										outputBmp = true;
-									} 
-									else if (commandList[3] == "off"){
-										outputBmp = false;
-									}
-									else {
-										cout << "Unknown Setting: " << commandList[3] << " - Try on or off.\n\n";
-									}
-								}
-								else if (commandList[2] == "control"){
-									if (commandList[3] == "on"){
-										showCtrl = true;
-									} 
-									else if (commandList[3] == "off"){
-										showCtrl = false;
-									}
-									else {
-										cout << "Unknown Setting: " << commandList[3] << " - Try on or off.\n\n";
-									}
-								}
-								else if (commandList[2] == "display"){
-									if (commandList[3] == "on"){
-										showDisplay = true;
-									} 
-									else if (commandList[3] == "off"){
-										showDisplay = false;
-									}
-									else {
-										cout << "Unknown Setting: " << commandList[3] << " - Try on or off.\n\n";
-									}
-								}
-								else if (commandList[2] == "map"){
-									if (commandList[3] == "on"){
-										showFullSize = true;
-									} 
-									else if (commandList[3] == "off"){
-										showFullSize = false;
-									}
-									else {
-										cout << "Unknown Setting: " << commandList[3] << " - Try on or off.\n\n";
-									}
-								}
-								else {
-									cout << "Unknown Command: " << commandList[0] << " " <<commandList[1] << " " <<commandList[2] << "\n\n";
-								}
-							}
-							else {
-								cout << "Syntax Error: Set Output requires more than two args\n\n";
-							}
-						}
-					} 
-					else {
-						cout << "Syntax Error: Set requires more than one arg\n\n";
-					}
-				}
-				else if (commandList[0] == "load"){
-					if (commandList.size() >= 2){
-					}
-					else {
-						view.loadBmp();
-						view.output();	
-					}
-				}
-				else if (commandList[0] == "play"){
-					if (commandList.size() >= 2){
-					}
-					else {
-						cout << "\nOutputting to Alp\n";
-						#ifdef useDMD
-						dmd.outputView(view);
-						#endif				
-						break;	
-					}
-				}
-				else if (commandList[0] == "help"){
-					if (commandList.size() >= 2){
-						if (commandList[1] == "apply"){
-						
-						}
-						else if (commandList[1] == "set"){
-							
-						}
-					} 
-					else {
-						cout << "\n\nHelp menu; type help <command> for more details\n\n"
-						<< "exit - quit the program\ndisplay - output current view to screen\n"
-						<< "play - send sequence/image to SLM\ninvert - swap black & white\n"
-						<< "load - import an image or sequence\n"
-						<< "apply - apply a function to the image\nset - change program settings\n\n";
-					}					
-				}
-				else {
-					cout << "Unknown Command: " << commandList[0] << "\n\n";
-				}					
-			}
-		}
-	}
-}
+// Last but not least, include the menu function. 
+#include "helpers/menu.cpp"
 
 
 // Main
@@ -414,10 +148,15 @@ int menu(void* unused){
 int main(int argc, char* argv[]){ // Arguments are SDL Specific
 
 	srand(0); // Seed random number generator.
+	SetConsoleTitle("SLM Control Software");
 	
+// Command Line Arguments
+	
+	// Tell us what arguments we have
 	if (verbose) cout << "Command Line Arguments: " << argc << endl; 
 	
-	for(int i=0; i < argc; i++){
+	// Display the arguments, and put them in a global so all functions can see them.
+	for(int i=0; i < argc; i++){ 
 		if (verbose) cout << "Argument " << i << " = " << argv[i] << endl;
 		args.push_back(argv[i]);
 	}
@@ -524,30 +263,20 @@ int main(int argc, char* argv[]){ // Arguments are SDL Specific
 	*/
 	
 	
-	SDL_Event event;
-	
-	// Create an integer representation of PxGrpSize purely to stop the compiler moaning. 
-//	int intPxGrpSize = int(pxGrpSize); 
-	
-	// Create the View object that we'll later play with in the program. 
-//	cout << "Main: Creating View." << endl;
-//	View view(intPxGrpSize);
+	SDL_Event event; // Event Catcher.
    	
-   	// Console Menu var.
+// Console Menu Thread
    	int choice;
    	
-   	
-   	
    	SDL_Thread *menuThread;
-	
-	menuThread = SDL_CreateThread(menu, NULL);   	
+        
+	menuThread = SDL_CreateThread(menu, NULL); // Defines the function to run in the thread	
 	if ( menuThread == NULL ) {
 	        fprintf(stderr, "Unable to create thread: %s\n", SDL_GetError());
 	}
    	
 // Program Loop
    	while (!close){
-		//menu();
 		
 		/*
 		* Time to check if the user has pressed any keys while the SDL window
@@ -557,7 +286,7 @@ int main(int argc, char* argv[]){ // Arguments are SDL Specific
 		
 		while(SDL_PollEvent(&event)) {      
 			switch (event.type){
-				case SDL_WINDOWEVENT:
+				case SDL_WINDOWEVENT: // Window is moved/closed etc. 
 					if (event.window.event == SDL_WINDOWEVENT_CLOSE){
 						if (verbose) cout << "\n\nWindow Manager Close Requested." << endl;
 						close = true;
@@ -567,7 +296,7 @@ int main(int argc, char* argv[]){ // Arguments are SDL Specific
 					}
 				     
 				     break;
-				case SDL_KEYDOWN:
+				case SDL_KEYDOWN: // Someone pressed a key while window in focus. 
 					if (event.key.keysym.sym == SDLK_ESCAPE){
 						close = true;
 					}	
@@ -578,7 +307,7 @@ int main(int argc, char* argv[]){ // Arguments are SDL Specific
 		
 		
 		
-		SDL_Delay(20);
+		SDL_Delay(20); // Give the processor back to other programs for a bit!
 	}
    	
 	
@@ -605,10 +334,12 @@ int main(int argc, char* argv[]){ // Arguments are SDL Specific
 		SDL_DestroyWindow(wDispFull);
 	}
 	
+	// Shutdown the DMD nicely if we've been using it. 
 	#ifdef useDMD
 	dmd.quit();
 	#endif
 	
+	// Shutdown SDL... 
 	SDL_Quit();
 	exit(0);
 	return 0;    
