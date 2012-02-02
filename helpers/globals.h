@@ -9,6 +9,8 @@ double pxGrpSize = 10;
 int pxFillMode = 2;
 int intPxGrpSize = int(pxGrpSize); 
 
+vector<string> args;
+
 long illuminateTime; // Change this at runtime, defaults to ALP_DEFAULT on ALP::init. 
 long pictureTime = 200000; // In microseconds (us). Max: 10s, Min -> ALP_DEFAULT
 
@@ -17,7 +19,7 @@ bool showFullSize = false;
 bool showDisplay = true;
 bool outputBmp = false;
 bool outputFullBmp = false;
-bool verbose =  false;
+bool verbose =  true;
 
 int Xres = int(1920/pxGrpSize);
 int Yres = int(1080/pxGrpSize);
@@ -28,4 +30,4 @@ SDL_Texture *tCtrl, *tDisp, *tDispFull;
 
 bool close = false;
 
-//#define useDMD = TRUE
+#define useDMD = TRUE

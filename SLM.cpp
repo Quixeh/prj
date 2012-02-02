@@ -142,14 +142,44 @@ AlpDMD dmd;
 int menu(void* unused){
 	cout << "\n\nMain Menu\n---------\n";
 	
+	vector<string> argCommands;
+		
+	if (args.size() > 1){
+		for(int i=1; i < args.size(); i++){
+			string currentArgument = args[i];
+			if (currentArgument.find("run") == 0){ 
+				if (verbose) cout << "Run Argument Found...\n";
+				currentArgument.erase(0,5);
+				int n = currentArgument.size();
+				currentArgument.erase(n-1,n);
+				argCommands.push_back(currentArgument);
+			} 
+			else if (currentArgument.find("file") == 0){ 
+				if (verbose) cout << "File Argument Found...\n";
+				currentArgument.erase(0,6);
+				int n = currentArgument.size();
+				currentArgument.erase(n-1,n);
+				cout << currentArgument << endl;
+			}
+			else {
+				cout << "Error: Unknown command line argument.\n";
+			}
+		}
+	}
+	
 	while(!close){
-
+		
 		string choice;
 		char *cstr_choice, *currentCommand, *currentLine;
 		string ccStr, cwStr;
 		
-		cout << "\n>> ";
-		getline(cin, choice);
+		if (argCommands.size() > 0){
+			choice = argCommands[1];
+			argCommands.erase(argCommands.begin());	
+		} else {
+			cout << "\n>> ";
+			getline(cin, choice);
+		}
 				
 		vector<string> commandLines;
 		
@@ -174,7 +204,7 @@ int menu(void* unused){
 				strcpy(currentCommand, commandLines[i].c_str());
 			}
 						
-			//cout << "\nCurrent Command: " << currentCommand << endl;
+			if (verbose) cout << "\nCurrent Command: " << currentCommand << endl;
 				
 			if (!strcmp(currentCommand,"exit")){
 				close = true;
@@ -381,17 +411,18 @@ int menu(void* unused){
 
 // Main
 
-int main(int argc, char* args[]){ // Arguments are SDL Specific
+int main(int argc, char* argv[]){ // Arguments are SDL Specific
 
 	srand(0); // Seed random number generator.
 	
-	if (verbose){
-		cout << "Command Line Arguments: " << argc << endl; 
-		for(int i = 0; i < argc; i++){
-	      		cout << "Argument " << i << " = " << args[i] << endl;
-		}
+	if (verbose) cout << "Command Line Arguments: " << argc << endl; 
+	
+	for(int i=0; i < argc; i++){
+		if (verbose) cout << "Argument " << i << " = " << argv[i] << endl;
+		args.push_back(argv[i]);
 	}
-
+	
+	
 // Start SDL Graphical Library. 
 	SDL_Init(SDL_INIT_EVERYTHING);
 	 
