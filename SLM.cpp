@@ -12,7 +12,7 @@
 * the pixels are grouped into 'PxGrp' classes. These deal with the individual 
 * mirrors on the DMD. 
 *
-* @author Andy Blackmore <axb803@bham.ac.uk> /
+* @author Andy Blackmore <axb803@bham.ac.uk>
 *
 */
 
@@ -80,10 +80,6 @@
 * Globals variables and program settings.
 */
 #include "helpers/globals.h"
-
-
-
-
 
 
 // Custom Classes
@@ -187,7 +183,8 @@ int main(int argc, char* argv[]){ // Arguments are SDL Specific
 
 	if (showCtrl) wCtrl = SDL_CreateWindow("SLM Control Panel",100,100,230,600,SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
 	if (showDisplay) wDisp = SDL_CreateWindow("DMD Display",100,100,Xres,Yres,SDL_WINDOW_SHOWN);
-	if (showFullSize) wDispFull = SDL_CreateWindow("DMD Fullsize",1680,0,1920,1080,SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
+//	if (showFullSize) wDispFull = SDL_CreateWindow("DMD Fullsize",1680,0,1920,1080,SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
+	if (showFullSize) wDispFull = SDL_CreateWindow("DMD Fullsize",100,100,1920,1080,SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
 	
 	if (verbose) cout << "Scaled Xres: " << Xres << " Yres: " << Yres << endl;
 	

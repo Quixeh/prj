@@ -126,6 +126,59 @@ void View::applyYfn(int type){
 	}	
 }
 
+void View::applyGrid(){
+	
+	int value = 0;	
+	for (int y=0; y<Yres; y++){
+		for (int x=0; x<Xres; x++){
+			if (value == 0){
+				groups[x][y].setValue(0);
+				value = 1;
+			} else {
+				groups[x][y].setValue(pxSize*pxSize);
+				value = 0;
+			}
+		}
+		if (value == 0){
+			value = 1;
+		} else {
+			value = 0;
+		}
+	}	
+}
+
+void View::applyXStripes(){
+	
+	int value = 0;	
+	for (int y=0; y<Yres; y++){
+		for (int x=0; x<Xres; x++){
+			if (value == 0){
+				groups[x][y].setValue(0);
+				value = 1;
+			} else {
+				groups[x][y].setValue(pxSize*pxSize);
+				value = 0;
+			}
+		}
+	}	
+}
+
+void View::applyYStripes(){
+	
+	int value = 0;	
+	for (int x=0; x<Xres; x++){
+		for (int y=0; y<Yres; y++){
+			if (value == 0){
+				groups[x][y].setValue(0);
+				value = 1;
+			} else {
+				groups[x][y].setValue(pxSize*pxSize);
+				value = 0;
+			}
+		}
+	}	
+}
+
 void View::invert(){
 	for (int x=0; x<Xres; x++){
 		for (int y=0; y<Yres; y++){

@@ -40,6 +40,9 @@ class View {
 	public:
 		void applyXfn(int);
 		void applyYfn(int);
+		void applyGrid();
+		void applyXStripes();
+		void applyYStripes();
 		void invert();
 		View(int);
 		void resize(int);

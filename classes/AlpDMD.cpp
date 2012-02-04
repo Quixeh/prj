@@ -116,3 +116,59 @@ bool AlpDMD::outputView(View view, int mode){
 		return 1;
 	}
 } 
+
+bool AlpDMD::outputViewTest(View view, int mode){
+	if (verbose) cout << "AlpDMD::outputViewTEST: Placing a single frame on the device" << endl;
+	ALP_ID sequenceID;
+	UCHAR *transmitImages = NULL;
+	transmitImages = new UCHAR[(1920*1080)];
+	
+	if (verbose) cout << "AlpDMD::outputViewTEST: Getting Pixels" << endl;
+	for (int x=0; x<1920; x++){
+		
+		for (int y=0; y<1080; y++){
+			//cout << "AlpDMD::outputView: x = " << x << " y = " << y << endl;
+			if (view.getPix(x,y) == 1){
+				FillMemory( transmitImages+x+(y*1920), 1, 0x00);
+				//FillMemory( transmitImages+x+(y*1920)+(1920*1080), 1, 0x00 );			
+			} else {
+				FillMemory( transmitImages+x+(y*1920), 1, 0x80);
+				//FillMemory( transmitImages+x+(y*1920)+(1920*1080), 1, 0x80 );
+			}
+		}
+	}
+	
+	if (verbose) cout << "AlpDMD::outputViewTEST: Allocating Sequence" << endl;
+	if (ALP_OK != AlpSeqAlloc(deviceID, 1, 1, &sequenceID)){
+		return 1;
+	}
+	
+	if (verbose) cout << "AlpDMD::outputViewTEST: Sending to Device" << endl;
+	if (ALP_OK != AlpSeqPut(deviceID, sequenceID, 0, 1, transmitImages)){
+		return 1;
+	}
+	if (verbose) cout << "AlpDMD::outputViewTEST: Freeing Memory" << endl;
+	free(transmitImages);
+	
+	if (verbose) cout << "AlpDMD::outputViewTEST: Setting up timings" << endl;
+	if (ALP_OK != AlpSeqTiming(deviceID, sequenceID, illuminateTime, pictureTime, ALP_DEFAULT, ALP_DEFAULT, ALP_DEFAULT)){
+		return 1;
+	}
+	
+	switch(mode){
+		case 2:
+			cout << "Hardware Trigger Mode Unavailabe. Stopping.\n";
+			break;
+		case 1:
+			cout << "Press any key to trigger projection...\n";
+			do {_getch();} while (_kbhit());
+			break;
+		case 0:
+		default:
+			break;
+	}
+	
+	if (verbose) cout << "AlpDMD::outputViewTEST: Starting Projection" << endl;
+//	AlpDevReset(deviceID, ALPB_RESET_GLOBAL, 0);
+	
+} 

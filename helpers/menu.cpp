@@ -154,6 +154,24 @@ int menu(void* unused){
 								view.randomise((double) rand() / (RAND_MAX+1));
 							}
 						}
+						else if (commandList[1] == "grid"){
+							view.applyGrid();
+						}
+						else if (commandList[1] == "stripes"){
+							if (commandList.size() >= 3){
+								if (commandList[2] == "vertical"){
+									view.applyXStripes();
+								}
+								else if (commandList[2] == "horizontal"){
+									view.applyYStripes();
+								} 
+								else {
+									cout <<  "Unknown Command: " << commandList[0] << " " <<commandList[1] << " " <<commandList[2] << "\n\n";
+								}
+							} else {
+								cout << "Syntax Error: Apply requires more than one arg\n\n";
+							}
+						}
 						else {
 							cout << "Unknown Command: " << commandList[0] << " " <<commandList[1] << "\n\n";
 						}	
@@ -297,6 +315,12 @@ int menu(void* unused){
 							dmd.outputView(view,2);
 							#endif		
 						}
+						else if (commandList[1] == "test"){
+							cout << "Preparing Alp (TEST Mode)\n";
+							#ifdef useDMD
+							dmd.outputViewTest(view,0);
+							#endif		
+						}
 					}
 					else {
 						cout << "Outputting to Alp\n";
@@ -326,7 +350,18 @@ int menu(void* unused){
 				else if (commandList[0] == "help"){
 					if (commandList.size() >= 2){
 						if (commandList[1] == "apply"){
-						
+							cout << "\n\nApply Help\n\n"
+							<< "apply black            - Apply a black screen\n"
+							<< "apply white            - Apply a white screen\n"
+							<< "apply random <chance>  - Apply a random potential\n"
+							<< "apply xgrad            - Apply a horizontal Gradient\n"
+							<< "apply ygrad            - Apply a vertical Gradient\n"
+							<< "apply x2               - Apply a horizontal polynomial\n"
+							<< "apply y2               - Apply a vertical polynomial\n"
+							<< "apply grid             - Apply an alternating grid, determined by pxGrpSize\n"
+							<< "apply stripes vertical - Apply vertical stripes\n"
+							<< "apply stripes horizontal - Apply horizontal stripes\n";
+							 
 						}
 						else if (commandList[1] == "set"){
 							
