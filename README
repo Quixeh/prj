@@ -1,4 +1,3 @@
-
       SSSSSSSSSSSSSSS LLLLLLLLLLL             MMMMMMMM               MMMMMMMM
     SS:::::::::::::::SL:::::::::L             M:::::::M             M:::::::M
    S:::::SSSSSS::::::SL:::::::::L             M::::::::M           M::::::::M
@@ -31,12 +30,31 @@ ABSTRACT
  resolution.
 
  The image is handled by the class 'View' - and we have one 'View' per image.
- These can be grouped together to form sequences of images. Inside this View, 
+ These can be grouped together to form 'Sequences' of images. Inside this View, 
  the pixels are grouped into 'PxGrp' classes. These deal with the individual 
  mirrors on the DMD. 
 
- author Andy Blackmore <axb803@bham.ac.uk> <quixeh@gmail.com> 
+ author Andy Blackmore (axb803<at>bham<dot>ac<dot>uk) (quixeh<at>gmail<dot>com) 
 
+EXAMPLES
+--------
+
+Create and display a single image on the SLM and GUI:
+	
+	set size 5; apply xgrad; display; play;
+
+Load an image, and invert it:
+
+	load; invert; display;
+		
+		OR
+	
+	load "C:\MyImage.bmp"; invert; display;
+
+Command Line Tools:
+
+	-run="load;invert;display"
+	-file="script.txt"
 
 HELP MENU
 ---------
@@ -67,33 +85,41 @@ Apply Help:
 						
 Set Help:
 
-	set size <integer>           - Display current, or set new PxGrpSize
-	set refresh <integer>        - Display current, or set new refresh time (us)
+	set size <integer>           - Display current, or set new 
+                                       PxGrpSize
+	set refresh <integer>        - Display current, or set new 
+                                       refresh time (in us)
 	set verbose (on/off)         - Turn verbose mode on or off
 	set output bitmap (on/off)   - Turn bitmap output on or off
-	set output sbitmap (on/off)  - Turn scaled bitmap output on or off
+	set output sbitmap (on/off)  - Turn scaled bitmap output on
+                                       or off
 	set output control (on/off)  - Turn the control window on or off
 	set output display (on/off)  - Turn the display window on or off
-	set output map (on/off)      - Turn the pixel map window on or off
+	set output map (on/off)      - Turn the pixel map window on
+                                       or off
 						
 Sequence Help:
 	
 	seq load <Path>  - Load a directory of .bmp files into a sequence
 	seq display      - Preview the sequence on the display window
 	seq clear        - Clear the sequence
-	seq play <Mode>  - Send the sequence to the ALP - Mode = 0: Play now (default),
-			   Mode = 1: software trigger, Mode = 2: Hardware Trigger
+	seq play <Mode>  - Send the sequence to the ALP - Mode = 0: Play 
+                           now (default), Mode = 1: software trigger, 
+                           Mode = 2: Hardware Trigger
 						
 Play Help:
 	
-	play <Mode>     - Send the current view to the ALP - Mode = 0: Play now (default),
-	                  Mode = 1: software trigger, Mode = 2: Hardware Trigger
+	play <Mode>     - Send the current view to the ALP - Mode = 0: Play 
+                          now (default), Mode = 1: software trigger, 
+                          Mode = 2: Hardware Trigger
 						
 Load Help:
 	
-	load <Path>     - Load a single 24bit .bmp files into a sequence - File Size is required
-	                  to be 6,076 kB (No compression or encoding etc)
+	load <Path>     - Load a single 24bit .bmp files into a sequence - 
+                          File Size is required to be 6,076 kB (No compression
+                          or encoding etc)
 						
 DMD Help:
 	
-	dmd (on/off)    - Turn the connection to the DMD on or off. When off, the DMD can be                   			   	          safely disconnected
+	dmd (on/off)    - Turn the connection to the DMD on or off. When off, 
+                          the DMD can be safely disconnected.
