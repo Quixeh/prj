@@ -390,20 +390,51 @@ int menu(void* unused){
 					if (commandList.size() >= 2){
 						if (commandList[1] == "apply"){
 							cout << "\n\nApply Help\n\n"
-							<< "apply black            - Apply a black screen\n"
-							<< "apply white            - Apply a white screen\n"
-							<< "apply random <chance>  - Apply a random potential\n"
-							<< "apply xgrad            - Apply a horizontal Gradient\n"
-							<< "apply ygrad            - Apply a vertical Gradient\n"
-							<< "apply x2               - Apply a horizontal polynomial\n"
-							<< "apply y2               - Apply a vertical polynomial\n"
-							<< "apply grid             - Apply an alternating grid, determined by pxGrpSize\n"
-							<< "apply stripes vertical - Apply vertical stripes\n"
+							<< "apply black              - Apply a black screen\n"
+							<< "apply white              - Apply a white screen\n"
+							<< "apply random <chance>    - Apply a random potential\n"
+							<< "apply xgrad              - Apply a horizontal Gradient\n"
+							<< "apply ygrad              - Apply a vertical Gradient\n"
+							<< "apply x2                 - Apply a horizontal polynomial\n"
+							<< "apply y2                 - Apply a vertical polynomial\n"
+							<< "apply grid               - Apply an alternating grid, determined by pxGrpSize\n"
+							<< "apply stripes vertical   - Apply vertical stripes\n"
 							<< "apply stripes horizontal - Apply horizontal stripes\n";
 							 
 						}
 						else if (commandList[1] == "set"){
-							
+							cout << "\n\Set Help\n\n"
+							<< "set size <integer>           - Display current, or set new PxGrpSize\n"
+							<< "set refresh <integer>        - Display current, or set new refresh time (us)\n"
+							<< "set verbose (on/off)         - Turn verbose mode on or off\n"
+							<< "set output bitmap (on/off)   - Turn bitmap output on or off\n"
+							<< "set output sbitmap (on/off)  - Turn scaled bitmap output on or off\n"
+							<< "set output control (on/off)  - Turn the control window on or off\n"
+							<< "set output display (on/off)  - Turn the display window on or off\n"
+							<< "set output map (on/off)      - Turn the pixel map window on or off\n";
+						}
+						else if (commandList[1] == "seq"){
+							cout << "\n\Sequence Help\n\n"
+							<< "seq load <Path>  - Load a directory of .bmp files into a sequence\n"
+							<< "seq display      - Preview the sequence on the display window\n"
+							<< "seq clear        - Clear the sequence\n"
+							<< "seq play <Mode>  - Send the sequence to the ALP - Mode = 0: Play now (default),\n"
+						        << "                   Mode = 1: software trigger, Mode = 2: Hardware Trigger\n";
+						}
+						else if (commandList[1] == "play"){
+							cout << "\n\Play Help\n\n"
+							<< "play <Mode>     - Send the current view to the ALP - Mode = 0: Play now (default),\n"
+						        << "                  Mode = 1: software trigger, Mode = 2: Hardware Trigger\n";
+						}
+						else if (commandList[1] == "load"){
+							cout << "\n\load Help\n\n"
+							<< "load <Path>     - Load a single 24bit .bmp files into a sequence - File Size is required"
+						        << "                  to be 6,076 kB (No compression or encoding etc)\n";
+						}
+						else if (commandList[1] == "dmd"){
+							cout << "\n\dmd Help\n\n"
+							<< "dmd (on/off)     - Turn the connection to the DMD on or off. When off, the DMD can be"
+						        << "                   safely disconnected\n";
 						}
 					} 
 					else {
@@ -415,6 +446,7 @@ int menu(void* unused){
 						<< "load <filename>        - Import an image or sequence\n" 
 						<< "dmd (on/off)           - Turn DMD on or off.\n"
 						<< "apply (function)       - Apply a function to the image\n"
+						<< "seq (command)          - Send a command to a sequence of images\n"
 						<< "set (option) <value>   - Change program settings\n\n";
 					}					
 				}

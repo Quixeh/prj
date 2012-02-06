@@ -1,2 +1,99 @@
-Portable Works At Desk
-Git Works at Home
+
+      SSSSSSSSSSSSSSS LLLLLLLLLLL             MMMMMMMM               MMMMMMMM
+    SS:::::::::::::::SL:::::::::L             M:::::::M             M:::::::M
+   S:::::SSSSSS::::::SL:::::::::L             M::::::::M           M::::::::M
+   S:::::S     SSSSSS LL:::::::LL             M:::::::::M         M:::::::::M
+   S:::::S              L:::::L               M::::::::::M       M::::::::::M
+   S:::::S              L:::::L               M:::::::::::M     M:::::::::::M
+    S::::SSSS           L:::::L               M:::::::M::::M   M::::M:::::::M
+     SS::::::SSSSS      L:::::L               M::::::M M::::M M::::M M::::::M
+       SSS::::::::SS    L:::::L               M::::::M  M::::M::::M  M::::::M
+          SSSSSS::::S   L:::::L               M::::::M   M:::::::M   M::::::M
+               S:::::S  L:::::L               M::::::M    M:::::M    M::::::M
+               S:::::S  L:::::L         LLLLLLM::::::M     MMMMM     M::::::M
+   SSSSSSS     S:::::SLL:::::::LLLLLLLLL:::::LM::::::M               M::::::M
+   S::::::SSSSSS:::::SL::::::::::::::::::::::LM::::::M               M::::::M
+   S:::::::::::::::SS L::::::::::::::::::::::LM::::::M               M::::::M
+    SSSSSSSSSSSSSSS   LLLLLLLLLLLLLLLLLLLLLLLLMMMMMMMM               MMMMMMMM
+
+       Spatial Light Modulator Controller Software, Andrew Blackmore 2012.   
+
+
+ABSTRACT
+--------
+
+ This is a device controller program, Created for the DLi Discovery 4100 SLM
+ with the .95' 1920x1080 DMD attached.
+
+ The DMD is essentially an array of mirrors - so we have a digital system where
+ a pixel can either be on or off. To introduce greyscale and intensity level
+ control, we have grouped the pixels together, effectively reducing the 
+ resolution.
+
+ The image is handled by the class 'View' - and we have one 'View' per image.
+ These can be grouped together to form sequences of images. Inside this View, 
+ the pixels are grouped into 'PxGrp' classes. These deal with the individual 
+ mirrors on the DMD. 
+
+ author Andy Blackmore <axb803@bham.ac.uk> <quixeh@gmail.com> 
+
+
+HELP MENU
+---------
+
+Main Help Menu:
+
+	exit                   - Quit the program
+	display                - Update the GUI
+	invert                 - Swap black & white pixels
+	play <mode>            - Send sequence/image to SLM 
+	load <filename>        - Import an image or sequence
+	dmd (on/off)           - Turn DMD on or off.
+	apply (function)       - Apply a function to the image
+	seq (command)          - Send a command to a sequence of images
+	set (option) <value>   - Change program settings
+
+Apply Help:
+	
+	apply black              - Apply a black screen
+	apply white              - Apply a white screen
+	apply random <chance>    - Apply a random potential
+	apply xgrad              - Apply a horizontal Gradient
+	apply ygrad              - Apply a vertical Gradient
+	apply x2                 - Apply a horizontal polynomial
+	apply y2                 - Apply a vertical polynomial									apply grid               - Apply an alternating grid, determined by pxGrpSize
+	apply stripes vertical   - Apply vertical stripes
+	apply stripes horizontal - Apply horizontal stripes
+						
+Set Help:
+
+	set size <integer>           - Display current, or set new PxGrpSize
+	set refresh <integer>        - Display current, or set new refresh time (us)
+	set verbose (on/off)         - Turn verbose mode on or off
+	set output bitmap (on/off)   - Turn bitmap output on or off
+	set output sbitmap (on/off)  - Turn scaled bitmap output on or off
+	set output control (on/off)  - Turn the control window on or off
+	set output display (on/off)  - Turn the display window on or off
+	set output map (on/off)      - Turn the pixel map window on or off
+						
+Sequence Help:
+	
+	seq load <Path>  - Load a directory of .bmp files into a sequence
+	seq display      - Preview the sequence on the display window
+	seq clear        - Clear the sequence
+	seq play <Mode>  - Send the sequence to the ALP - Mode = 0: Play now (default),
+			   Mode = 1: software trigger, Mode = 2: Hardware Trigger
+						
+Play Help:
+	
+	play <Mode>     - Send the current view to the ALP - Mode = 0: Play now (default),
+	                  Mode = 1: software trigger, Mode = 2: Hardware Trigger
+						
+Load Help:
+	
+	load <Path>     - Load a single 24bit .bmp files into a sequence - File Size is required
+	                  to be 6,076 kB (No compression or encoding etc)
+						
+DMD Help:
+	
+	dmd (on/off)    - Turn the connection to the DMD on or off. When off, the DMD can be                   			   	          safely disconnected
