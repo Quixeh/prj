@@ -7,7 +7,6 @@ using namespace std;
 
 double pxGrpSize = 10;
 int pxFillMode = 2;
-int intPxGrpSize = int(pxGrpSize); 
 
 vector<string> args;
 

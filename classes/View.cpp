@@ -21,7 +21,6 @@ void View::resize(int setPxSize){
 	
 	delete [] groups; 
 	pxGrpSize = setPxSize;
-	intPxGrpSize = int(pxGrpSize); 
 	pxSize = setPxSize;
 	Xres = 1920/pxSize;
 	Yres = 1080/pxSize;
@@ -493,7 +492,7 @@ bool View::loadBmp() {
 	// Using the reference http://www.dreamincode.net/forums/topic/26936-how-to-make-sense-of-the-bmp-format/
 	
 	HANDLE f; 
-	f = CreateFile(fileName,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,NULL,NULL);
+	f = CreateFile(fileName,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
 
 	BITMAPFILEHEADER bmpFileHeader;
 	BITMAPINFOHEADER bmpInfoHeader;
@@ -510,7 +509,7 @@ bool View::loadBmp() {
     	
     	for(int x=0; x<1920; x++){
 		for(int y=0; y<1080; y++){
-			setPix(x,y,(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255));
+			setPix(x,y,int(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255));
 			
 		}
 	}
@@ -527,12 +526,12 @@ bool View::loadBmpSpecific(string fileNameStr) {
 	char fileName[MAX_PATH] = "";
 	
 	strcpy(fileName, fileNameStr.c_str());
-	if (verbose) cout << "Loading Specified File: \"" << fileName << "\"\n";
+	if (verbose) cout << "View::loadBmpSpecific: Loading Specified File: \"" << fileName << "\"\n";
 
 	// Using the reference http://www.dreamincode.net/forums/topic/26936-how-to-make-sense-of-the-bmp-format/
 	
 	HANDLE f; 
-	f = CreateFile(fileName,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,NULL,NULL);
+	f = CreateFile(fileName,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
 
 	BITMAPFILEHEADER bmpFileHeader;
 	BITMAPINFOHEADER bmpInfoHeader;
@@ -549,7 +548,7 @@ bool View::loadBmpSpecific(string fileNameStr) {
     	
     	for(int x=0; x<1920; x++){
 		for(int y=0; y<1080; y++){
-			setPix(x,y,(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255));
+			setPix(x,y,int(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255));
 			
 		}
 	}

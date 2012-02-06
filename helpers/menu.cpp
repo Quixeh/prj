@@ -184,9 +184,10 @@ int menu(void* unused){
 						if (commandList[1] == "size"){
 							if (commandList.size() > 2){
 								pxGrpSize = atoi(commandList[2].c_str());
+								
 								Xres = int(1920/pxGrpSize);
 								Yres = int(1080/pxGrpSize);
-								view.resize(pxGrpSize);
+								view.resize(int(pxGrpSize));
 								if (showDisplay){
 									SDL_SetWindowSize(wDisp, Xres, Yres);
 									SDL_DestroyRenderer(rDisp);
@@ -201,6 +202,7 @@ int menu(void* unused){
 						else if (commandList[1] == "refresh"){
 							if (commandList.size() > 2){
 								pictureTime = atoi(commandList[2].c_str());
+								seq.updateTiming();
 							} else {
 								cout << "Refresh Time (us): " << pictureTime << endl;
 							}							
@@ -301,6 +303,49 @@ int menu(void* unused){
 						view.output();	
 					}
 				}
+				else if (commandList[0] == "seq"){
+					if (commandList.size() >= 2){
+						if (commandList[1] == "load"){
+							if (commandList.size() >= 3){
+								seq.loadSpecific(commandList[2]);
+							} else { 
+								seq.load();
+							}	
+						} 
+						else if (commandList[1] == "display"){
+							seq.play();
+						}
+						else if (commandList[1] == "clear"){
+							seq.clear();
+						}
+						else if (commandList[1] == "play"){
+							if (commandList.size() >= 3){
+								if (commandList[2] == "swtrig"){
+									cout << "Preparing Alp (Software Trigger Mode)\n";
+									#ifdef useDMD
+									dmd.outputSeq(seq,1);
+									#endif		
+								}
+								else if (commandList[1] == "hwtrig"){
+									cout << "Preparing Alp (Hardware Trigger Mode)\n";
+									#ifdef useDMD
+									dmd.outputSeq(seq,2);
+									#endif		
+								}
+							}
+							else {
+								cout << "Outputting to Alp\n";
+								#ifdef useDMD
+								dmd.outputSeq(seq,0);
+								#endif				
+								break;	
+							}
+						}
+					}
+					else {
+						cout << "Syntax Error: Seq requires more than one arg\n\n";	
+					}
+				}
 				else if (commandList[0] == "play"){
 					if (commandList.size() >= 2){
 						if (commandList[1] == "swtrig"){
@@ -313,12 +358,6 @@ int menu(void* unused){
 							cout << "Preparing Alp (Hardware Trigger Mode)\n";
 							#ifdef useDMD
 							dmd.outputView(view,2);
-							#endif		
-						}
-						else if (commandList[1] == "test"){
-							cout << "Preparing Alp (TEST Mode)\n";
-							#ifdef useDMD
-							dmd.outputViewTest(view,0);
 							#endif		
 						}
 					}

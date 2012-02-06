@@ -64,30 +64,26 @@ bool AlpDMD::outputView(View view, int mode){
 	if (verbose) cout << "AlpDMD::outputView: Placing a single frame on the device" << endl;
 	ALP_ID sequenceID;
 	UCHAR *transmitImages = NULL;
-	transmitImages = new UCHAR[(1920*1080)*2];
+	transmitImages = new UCHAR[(1920*1080)];
 	
 	if (verbose) cout << "AlpDMD::outputView: Getting Pixels" << endl;
 	for (int x=0; x<1920; x++){
-		
 		for (int y=0; y<1080; y++){
-			//cout << "AlpDMD::outputView: x = " << x << " y = " << y << endl;
 			if (view.getPix(x,y) == 1){
 				FillMemory( transmitImages+x+(y*1920), 1, 0x00);
-				FillMemory( transmitImages+x+(y*1920)+(1920*1080), 1, 0x00 );			
 			} else {
 				FillMemory( transmitImages+x+(y*1920), 1, 0x80);
-				FillMemory( transmitImages+x+(y*1920)+(1920*1080), 1, 0x80 );
 			}
 		}
 	}
 	
 	if (verbose) cout << "AlpDMD::outputView: Allocating Sequence" << endl;
-	if (ALP_OK != AlpSeqAlloc(deviceID, 1, 2, &sequenceID)){
+	if (ALP_OK != AlpSeqAlloc(deviceID, 1, 1, &sequenceID)){
 		return 1;
 	}
 	
 	if (verbose) cout << "AlpDMD::outputView: Sending to Device" << endl;
-	if (ALP_OK != AlpSeqPut(deviceID, sequenceID, 0, 2, transmitImages)){
+	if (ALP_OK != AlpSeqPut(deviceID, sequenceID, 0, 1, transmitImages)){
 		return 1;
 	}
 	if (verbose) cout << "AlpDMD::outputView: Freeing Memory" << endl;
@@ -117,40 +113,39 @@ bool AlpDMD::outputView(View view, int mode){
 	}
 } 
 
-bool AlpDMD::outputViewTest(View view, int mode){
-	if (verbose) cout << "AlpDMD::outputViewTEST: Placing a single frame on the device" << endl;
+bool AlpDMD::outputSeq(Sequence seq, int mode){
+	if (verbose) cout << "AlpDMD::outputSeq: Placing a single frame on the device" << endl;
 	ALP_ID sequenceID;
 	UCHAR *transmitImages = NULL;
-	transmitImages = new UCHAR[(1920*1080)];
-	
-	if (verbose) cout << "AlpDMD::outputViewTEST: Getting Pixels" << endl;
-	for (int x=0; x<1920; x++){
+	transmitImages = new UCHAR[(1920*1080)*seq.getSize()];
 		
-		for (int y=0; y<1080; y++){
-			//cout << "AlpDMD::outputView: x = " << x << " y = " << y << endl;
-			if (view.getPix(x,y) == 1){
-				FillMemory( transmitImages+x+(y*1920), 1, 0x00);
-				//FillMemory( transmitImages+x+(y*1920)+(1920*1080), 1, 0x00 );			
-			} else {
-				FillMemory( transmitImages+x+(y*1920), 1, 0x80);
-				//FillMemory( transmitImages+x+(y*1920)+(1920*1080), 1, 0x80 );
+	if (verbose) cout << "AlpDMD::outputSeq: Getting Pixels" << endl;
+	
+	for (int n=0; n<seq.getSize(); n++){
+		for (int x=0; x<1920; x++){
+			for (int y=0; y<1080; y++){
+				if (seq.frames[n].getPix(x,y) == 1){
+					FillMemory( transmitImages+x+(y*1920)+(n*(1920*1080)), 1, 0x00);
+				} else {
+					FillMemory( transmitImages+x+(y*1920)+(n*(1920*1080)), 1, 0x80);
+				}
 			}
 		}
 	}
 	
-	if (verbose) cout << "AlpDMD::outputViewTEST: Allocating Sequence" << endl;
-	if (ALP_OK != AlpSeqAlloc(deviceID, 1, 1, &sequenceID)){
+	if (verbose) cout << "AlpDMD::outputSeq: Allocating Sequence" << endl;
+	if (ALP_OK != AlpSeqAlloc(deviceID, 1, seq.getSize(), &sequenceID)){
 		return 1;
 	}
 	
-	if (verbose) cout << "AlpDMD::outputViewTEST: Sending to Device" << endl;
-	if (ALP_OK != AlpSeqPut(deviceID, sequenceID, 0, 1, transmitImages)){
+	if (verbose) cout << "AlpDMD::outputSeq: Sending to Device" << endl;
+	if (ALP_OK != AlpSeqPut(deviceID, sequenceID, 0, seq.getSize(), transmitImages)){
 		return 1;
 	}
-	if (verbose) cout << "AlpDMD::outputViewTEST: Freeing Memory" << endl;
+	if (verbose) cout << "AlpDMD::outputSeq: Freeing Memory" << endl;
 	free(transmitImages);
 	
-	if (verbose) cout << "AlpDMD::outputViewTEST: Setting up timings" << endl;
+	if (verbose) cout << "AlpDMD::outputSeq: Setting up timings" << endl;
 	if (ALP_OK != AlpSeqTiming(deviceID, sequenceID, illuminateTime, pictureTime, ALP_DEFAULT, ALP_DEFAULT, ALP_DEFAULT)){
 		return 1;
 	}
@@ -168,7 +163,10 @@ bool AlpDMD::outputViewTest(View view, int mode){
 			break;
 	}
 	
-	if (verbose) cout << "AlpDMD::outputViewTEST: Starting Projection" << endl;
-//	AlpDevReset(deviceID, ALPB_RESET_GLOBAL, 0);
-	
+	if (verbose) cout << "AlpDMD::outputSeq: Starting Projection" << endl;
+	if (ALP_OK != AlpProjStartCont(deviceID, sequenceID)){
+		return 1;
+	}
 } 
+
+

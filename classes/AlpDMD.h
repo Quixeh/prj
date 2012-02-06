@@ -12,6 +12,6 @@ class AlpDMD {
 		int init();
 		void quit();
 		bool outputView(View, int);
-		bool outputViewTest(View, int);
+		bool outputSeq(Sequence, int);
 };
 

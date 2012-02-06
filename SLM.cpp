@@ -12,7 +12,7 @@
 * the pixels are grouped into 'PxGrp' classes. These deal with the individual 
 * mirrors on the DMD. 
 *
-* @author Andy Blackmore <axb803@bham.ac.uk>
+* @author Andy Blackmore <axb803@bham.ac.uk> 
 *
 */
 
@@ -57,10 +57,21 @@
 * Allows us to know what the system time is. 
 */
 #include <time.h>
+
+/* sstream
+* Allows us to use string streams 
+*/
 #include <sstream>
+
+/* vector
+* Dynamicly sized arrays
+*/
 #include <vector>
 
-
+/* shlobj
+*  Windows Folder Dialogues
+*/
+#include <shlobj.h>   
 
 // Specific Includes
 
@@ -127,7 +138,8 @@
 
 using namespace std;
 
-View view(intPxGrpSize);
+int viewSize = int(pxGrpSize);
+View view(viewSize);
 Sequence seq;
 
 
