@@ -79,7 +79,9 @@ Apply Help:
 	apply xgrad              - Apply a horizontal Gradient
 	apply ygrad              - Apply a vertical Gradient
 	apply x2                 - Apply a horizontal polynomial
-	apply y2                 - Apply a vertical polynomial									apply grid               - Apply an alternating grid, determined by pxGrpSize
+	apply y2                 - Apply a vertical polynomial
+        apply grid               - Apply an alternating grid, determined
+                                   by pxGrpSize
 	apply stripes vertical   - Apply vertical stripes
 	apply stripes horizontal - Apply horizontal stripes
 						
