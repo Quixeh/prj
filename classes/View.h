@@ -1,7 +1,10 @@
-/** First Draft View Class
+/** View Class
+* Represents images in the program. Each view class consists of many 
+* PxGrp classes
+*
+* Methods defined in View.cpp
 *
 * @author Andy Blackmore <axb803@bham.ac.uk>
-*
 */
 
 
@@ -41,6 +44,7 @@ class View {
 		void applyXfn(int);
 		void applyYfn(int);
 		void applyGrid();
+		void applySinxfn(int);
 		void applyXStripes();
 		void applyYStripes();
 		void invert();

@@ -1,3 +1,3 @@
 set verbose on
-seq load E:\Documents\Git\prj\seqTests
+seq load D:\prj\seqTests
 seq display

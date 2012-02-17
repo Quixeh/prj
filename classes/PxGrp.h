@@ -1,8 +1,12 @@
-/** First Draft Pixel Grouping Class
+/** PxGrp Class
+* Represents p in the program. Each view class consists of many 
+* PxGrp classes
+*
+* Methods defined in PxGrp.cpp
 *
 * @author Andy Blackmore <axb803@bham.ac.uk>
-*
 */
+
 #include <string>
 
 using namespace std;

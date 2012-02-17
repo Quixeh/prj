@@ -1,6 +1,14 @@
+/** View Class Methods
+*
+* Header defined in View.h
+*
+* @author Andy Blackmore <axb803@bham.ac.uk>
+*/
+
 #include <cmath>
 #include <fstream>
 #include <string>
+
 
 using namespace std;
 
@@ -93,6 +101,12 @@ void View::applyXfn(int type){
 				// X^2 Centred at X/2. 
         			xV = ( ((x-(Xres/2.0))*(x-(Xres/2.0))/double((Xres/2.0) * (Xres/2.0))) * (pxSize * pxSize));
         			break;
+        			
+        		case 3: 
+				// Sinx
+				xV = abs(sin(x/double(10)))*(pxSize * pxSize);
+				break;
+				
 		}
 		
 		for (int y=0; y<Yres; y++){
@@ -102,6 +116,19 @@ void View::applyXfn(int type){
 	}	
 }
 
+void View::applySinxfn(int dist){
+	double xV = 0;
+	if (pxSize > dist){
+		cout << "Can't create a sinx with distance between peaks less than the PxGrp size." << endl;
+	} else {
+		for (int x=0; x<Xres; x++){
+			for (int y=0; y<Yres; y++){
+				xV = abs(sin(pi*x*pxSize/double(dist)))*(pxSize * pxSize);
+				groups[x][y].setValue(int(floor(xV+0.5))); 
+			}
+		}
+	}
+}
 void View::applyYfn(int type){
 
      double yV = 0;

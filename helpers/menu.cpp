@@ -1,3 +1,10 @@
+/** 
+* Project Menu System
+* 
+* This function controls the menu used in the command window of the program. 
+* All user interface needs to go through this menu. 
+**/
+
 #include <stdio.h>
 #include <iostream>
 #include <vector>
@@ -137,6 +144,9 @@ int menu(void* unused){
 						else if (commandList[1] == "x2"){
 							view.applyXfn(2);
 						}
+						else if (commandList[1] == "sinx"){
+							view.applySinxfn(atoi(commandList[2].c_str()));
+						}
 						else if (commandList[1] == "y2"){
 							view.applyYfn(2);
 						}
@@ -205,6 +215,14 @@ int menu(void* unused){
 								seq.updateTiming();
 							} else {
 								cout << "Refresh Time (us): " << pictureTime << endl;
+							}							
+						}
+						else if (commandList[1] == "illuminate"){
+							if (commandList.size() > 2){
+								illuminateTime = atoi(commandList[2].c_str());
+								seq.updateTiming();
+							} else {
+								cout << "Illuminate Time (us): " << illuminateTime << endl;
 							}							
 						}
 						else if (commandList[1] == "verbose"){
@@ -326,7 +344,7 @@ int menu(void* unused){
 									dmd.outputSeq(seq,1);
 									#endif		
 								}
-								else if (commandList[1] == "hwtrig"){
+								else if (commandList[2] == "hwtrig"){
 									cout << "Preparing Alp (Hardware Trigger Mode)\n";
 									#ifdef useDMD
 									dmd.outputSeq(seq,2);
@@ -381,6 +399,11 @@ int menu(void* unused){
 							dmd.init();
 							#endif								
 						}
+						else if (commandList[1] == "stop"){
+							#ifdef useDMD
+							dmd.stop();
+							#endif								
+						}
 					}
 					else {
 						cout << "Syntax Error: Set requires more than one arg\n\n";
@@ -419,12 +442,12 @@ int menu(void* unused){
 							<< "seq display      - Preview the sequence on the display window\n"
 							<< "seq clear        - Clear the sequence\n"
 							<< "seq play <Mode>  - Send the sequence to the ALP - Mode = 0: Play now (default),\n"
-						        << "                   Mode = 1: software trigger, Mode = 2: Hardware Trigger\n";
+						        << "                   Mode = swtrig: software trigger, Mode = hwtrig: Hardware Trigger\n";
 						}
 						else if (commandList[1] == "play"){
 							cout << "\n\Play Help\n\n"
 							<< "play <Mode>     - Send the current view to the ALP - Mode = 0: Play now (default),\n"
-						        << "                  Mode = 1: software trigger, Mode = 2: Hardware Trigger\n";
+						        << "                   Mode = swtrig: software trigger, Mode = hwtrig: Hardware Trigger\n";
 						}
 						else if (commandList[1] == "load"){
 							cout << "\n\load Help\n\n"
