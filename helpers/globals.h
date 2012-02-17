@@ -48,4 +48,4 @@ bool close = false; // Menu Variable - Not editable.
 // Comment out the next line to compile a version of the program that does not
 // control the DMD. This is useful for testing on a PC that does not have the
 // Cryptobox software installed. 
-//#define useDMD = TRUE 
+#define useDMD = TRUE 

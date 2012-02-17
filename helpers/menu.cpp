@@ -13,6 +13,8 @@ using namespace std;
 
 int menu(void* unused){
 		
+	// Title of program
+		
 	cout    << endl
 		<< "      SSSSSSSSSSSSSSS LLLLLLLLLLL             MMMMMMMM               MMMMMMMM\n"
 		<< "    SS:::::::::::::::SL:::::::::L             M:::::::M             M:::::::M\n"
@@ -33,55 +35,60 @@ int menu(void* unused){
 		<< endl
 		<< "       Spatial Light Modulator Controller Software, Andrew Blackmore 2012.   \n";
 	
-	vector<string> argCommands;
+	vector<string> argCommands; // Vector to hold commands from starting arguments. 
 		
-	if (args.size() > 1){
-		for(int i=1; i < args.size(); i++){
-			string currentArgument = args[i];
-			if (currentArgument.find("run") == 0){ 
+	// Process the command line arguments: 
+		
+	if (args.size() > 1){                                     // If we have any arguments
+		for(int i=1; i < args.size(); i++){               // for each one
+			string currentArgument = args[i];         // Process one at a time
+			if (currentArgument.find("run") == 0){    // If its a run command
 				if (verbose) cout << "Run Argument Found...\n";
-				currentArgument.erase(0,5);
-				int n = currentArgument.size();
-				currentArgument.erase(n-1,n);
-				argCommands.push_back(currentArgument);
-			} 
-			else if (currentArgument.find("file") == 0){ 
-				if (verbose) cout << "File Argument Found...\n";
-				currentArgument.erase(0,6);
-				int n = currentArgument.size();
-				currentArgument.erase(n-1,n);
+				currentArgument.erase(0,5);      // remove run="
+				int n = currentArgument.size(); 
+				currentArgument.erase(n-1,n);    // remove final "
 				
-				ifstream inputFile(currentArgument.c_str());
-				string inLine;
-				if (!inputFile.fail()) {
-					while (getline(inputFile, inLine)){
-						argCommands.push_back(inLine);
+				// Add this command to our "to-do" list.
+				argCommands.push_back(currentArgument); 
+			} 
+			else if (currentArgument.find("file") == 0){ // If its a file command
+				if (verbose) cout << "File Argument Found...\n";
+				currentArgument.erase(0,6);          // Remove the file=" from the start
+				int n = currentArgument.size(); 
+				currentArgument.erase(n-1,n);        // Remove the final "
+				
+				// This means that currentArgument now contains the path to the file. 
+				ifstream inputFile(currentArgument.c_str()); // Open this file. 
+				string inLine; 
+				if (!inputFile.fail()) { // If we opened the file OK
+					while (getline(inputFile, inLine)){ // for each line in the file
+						argCommands.push_back(inLine); // Add to to-do list. 
 					}
-					inputFile.close();
+					inputFile.close(); // Close the file. 
 				} 
-				else {
+				else { // If we couldn't open the file:
 					cout << "Error: Unable to open file \"" << currentArgument.c_str() << "\"\n";
 				}
 				
 			}
-			else {
+			else { // The command wasn't file= or run=
 				cout << "Error: Unknown command line argument.\n";
 			}
 		}
 	}
 	
-	while(!close){
+	while(!close){ // Main Menu Loop, runs until we close it. 
 		
-		string choice;
-		char *cstr_choice, *currentCommand, *currentLine;
-		string ccStr, cwStr;
+		string choice; // Input text from user. 
+		char *cstr_choice, *currentCommand, *currentLine; 
+		string ccStr, cwStr; // String versions of above
 		
-		if (argCommands.size() > 0){
-			choice = argCommands[0];
-			argCommands.erase(argCommands.begin());	
+		if (argCommands.size() > 0){ // If we have arguments from earlier to perform:
+			choice = argCommands[0]; // Make this the input
+			argCommands.erase(argCommands.begin());	// Remove from "to-do" list. 
 		} else {
-			cout << "\n>> ";
-			getline(cin, choice);
+			cout << "\n>> "; 
+			getline(cin, choice); // Capture the input text. 
 		}
 				
 		vector<string> commandLines;
@@ -404,6 +411,11 @@ int menu(void* unused){
 							dmd.stop();
 							#endif								
 						}
+						else if (commandList[1] == "info"){
+							#ifdef useDMD
+							dmd.fullInquire();
+							#endif								
+						}
 					}
 					else {
 						cout << "Syntax Error: Set requires more than one arg\n\n";
@@ -426,7 +438,7 @@ int menu(void* unused){
 							 
 						}
 						else if (commandList[1] == "set"){
-							cout << "\n\Set Help\n\n"
+							cout << "\n\nSet Help\n\n"
 							<< "set size <integer>           - Display current, or set new PxGrpSize\n"
 							<< "set refresh <integer>        - Display current, or set new refresh time (us)\n"
 							<< "set verbose (on/off)         - Turn verbose mode on or off\n"
@@ -437,7 +449,7 @@ int menu(void* unused){
 							<< "set output map (on/off)      - Turn the pixel map window on or off\n";
 						}
 						else if (commandList[1] == "seq"){
-							cout << "\n\Sequence Help\n\n"
+							cout << "\n\nSequence Help\n\n"
 							<< "seq load <Path>  - Load a directory of .bmp files into a sequence\n"
 							<< "seq display      - Preview the sequence on the display window\n"
 							<< "seq clear        - Clear the sequence\n"
@@ -445,17 +457,17 @@ int menu(void* unused){
 						        << "                   Mode = swtrig: software trigger, Mode = hwtrig: Hardware Trigger\n";
 						}
 						else if (commandList[1] == "play"){
-							cout << "\n\Play Help\n\n"
+							cout << "\n\nPlay Help\n\n"
 							<< "play <Mode>     - Send the current view to the ALP - Mode = 0: Play now (default),\n"
 						        << "                   Mode = swtrig: software trigger, Mode = hwtrig: Hardware Trigger\n";
 						}
 						else if (commandList[1] == "load"){
-							cout << "\n\load Help\n\n"
+							cout << "\n\nLoad Help\n\n"
 							<< "load <Path>     - Load a single 24bit .bmp files into a sequence - File Size is required"
 						        << "                  to be 6,076 kB (No compression or encoding etc)\n";
 						}
 						else if (commandList[1] == "dmd"){
-							cout << "\n\dmd Help\n\n"
+							cout << "\n\ndmd Help\n\n"
 							<< "dmd (on/off)     - Turn the connection to the DMD on or off. When off, the DMD can be"
 						        << "                   safely disconnected\n";
 						}

@@ -1,6 +1,5 @@
 /** PxGrp Class
-* Represents p in the program. Each view class consists of many 
-* PxGrp classes
+* Represents groups of pixels in the program.
 *
 * Methods defined in PxGrp.cpp
 *
@@ -12,20 +11,22 @@
 using namespace std;
 
 class PxGrp {
-	private:
-		int value, size;
-		int** data;
+	private: // Functions and vars usable only by the class
+		int value;  // How many pixels in this group are on.
+		int size;   // sqrt of many pixels this group contains.
+		int** data; // Variable to hold each individual pixel's state.
 		
-	public:
-		PxGrp();
-		void invert();
-		void setPxSize(int);
-		int getValue();
-		int getData(int, int);
-		void setData(int, int, int);
-		void setValue(int);	
-		string getLine(int);
-		void checkValue();
+	public:  // Functions and vars usable by any external object
+		PxGrp();    // Constructor
+		void invert(); // Swap on pixels for off pixels
+		void setPxSize(int); // Resize the group
+		int getValue(); // Retrieve the amount of on pixels in this group
+		int getData(int, int); // Retrieve the state of a single pixel.
+		void setData(int, int, int); // Set a single pixel manually.
+		void setValue(int);	// Set the group's value
+		string getLine(int);    // Retrieve a line of pixels. 
+		void checkValue();      // Make sure that the amount of on pixels 
+		                 	// corresponds to the group's value
 };
 
 

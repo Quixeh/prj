@@ -1,20 +1,20 @@
 [Project]
 FileName=SLM.dev
 Name=SLM
-UnitCount=6
+UnitCount=7
 Type=1
 Ver=1
 ObjFiles=
 Includes=J:\Programs\DevCPP\App\devcpp\include;J:\prj\inc;E:\Programs\DevCPP\App\devcpp\include;E:\prj\inc;F:\Programs\DevCPP\App\devcpp\include;F:\prj\inc
 Libs=J:\prj\lib;E:\prj\lib;F:\prj\lib
-PrivateResource=
+PrivateResource=SLM_private.rc
 ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
 Linker=-lmingw32 -lSDLmain -lSDL -lalpD41 -lcomdlg32 -lUser32_@@_
 IsCpp=1
-Icon=
+Icon=SLM.ico
 ExeOutput=
 ObjectOutput=
 OverrideOutput=0
@@ -98,9 +98,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit7]
-FileName=classes\Sequence.h
+FileName=helpers\includes.h
 CompileCpp=1
-Folder=classes
+Folder=helpers
 Compile=1
 Link=1
 Priority=1000
