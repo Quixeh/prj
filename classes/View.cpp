@@ -129,6 +129,25 @@ void View::applySinxfn(int dist){
 		}
 	}
 }
+void View::applySqxfn(int dist){
+	double xV = 0;
+	if (pxSize > dist){
+		cout << "Can't create a sqx with distance between peaks less than the PxGrp size." << endl;
+	} else {
+		for (int x=0; x<Xres; x++){
+			double count = x*pxSize;
+			double flip = floor(count/double(dist*0.5));
+			if ( int(flip) % 2== 0 ){
+				xV = (pxSize * pxSize);
+			} else {
+				xV = 0;
+			}
+			for (int y=0; y<Yres; y++){
+				groups[x][y].setValue(int(xV)); 
+			}
+		}
+	}
+}
 void View::applyYfn(int type){
 
      double yV = 0;

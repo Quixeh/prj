@@ -154,6 +154,9 @@ int menu(void* unused){
 						else if (commandList[1] == "sinx"){
 							view.applySinxfn(atoi(commandList[2].c_str()));
 						}
+						else if (commandList[1] == "sqx"){
+							view.applySqxfn(atoi(commandList[2].c_str()));
+						}
 						else if (commandList[1] == "y2"){
 							view.applyYfn(2);
 						}

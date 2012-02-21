@@ -45,6 +45,7 @@ class View {
 		void applyYfn(int);
 		void applyGrid();
 		void applySinxfn(int);
+		void applySqxfn(int);
 		void applyXStripes();
 		void applyYStripes();
 		void invert();
