@@ -36,6 +36,7 @@ bool showDisplay = true;   // Show the Scaled GUI
 bool outputBmp = false;    // Output a scaled Bitmap on 'display' command. 
 bool outputFullBmp = false;// Output the fullsize bitmap on display. 
 bool verbose =  false;     // Debug and fully verbose discription of all program activities. 
+int imgMode = 2;
 
 vector<string> args; // Variable for Command Line Args - Not editable. 
 

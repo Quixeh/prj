@@ -328,6 +328,12 @@ int menu(void* unused){
 						view.output();	
 					}
 				}
+				else if (commandList[0] == "loadsc"){
+				
+					view.loadScaledBmp();
+					view.output();	
+					
+				}
 				else if (commandList[0] == "seq"){
 					if (commandList.size() >= 2){
 						if (commandList[1] == "load"){

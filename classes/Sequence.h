@@ -102,6 +102,8 @@ void Sequence::load(){
 	loadSpecific(pathStr);
 }
 
+
+
 void Sequence::loadSpecific(string pathStr){
 	
 // Using the reference: http://tomtech999.wordpress.com/2008/07/30/listing-files-in-a-directory-in-c/
@@ -130,7 +132,16 @@ void Sequence::loadSpecific(string pathStr){
 	       filePath += "\\";
 	       filePath += buff;
 	       	       
-	       loadView.loadBmpSpecific(filePath);
+	       switch (imgMode){
+			case 2:
+				loadView.loadScaledBmpSpecific(filePath);
+				break;
+			case 1:
+			default:
+				loadView.loadBmpSpecific(filePath);
+				break;
+		}		
+				
 	       addFrame(loadView);
 	
 	       while(working){
@@ -148,8 +159,17 @@ void Sequence::loadSpecific(string pathStr){
 				filePath += path;
 				filePath += "\\";
 				filePath += buff;
-								
-				loadView.loadBmpSpecific(filePath);
+				
+				switch (imgMode){
+					case 2:
+						loadView.loadScaledBmpSpecific(filePath);
+						break;
+					case 1:
+					default:
+						loadView.loadBmpSpecific(filePath);
+						break;
+				}		
+				
 				addFrame(loadView);
 	              
 		      } else {

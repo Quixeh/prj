@@ -587,3 +587,76 @@ bool View::loadBmpSpecific(string fileNameStr) {
 	}
 }
 
+bool View::loadScaledBmp(){
+	OPENFILENAME openFileDialog;
+	char fileName[MAX_PATH] = "";
+
+	ZeroMemory(&openFileDialog, sizeof(openFileDialog));
+
+	openFileDialog.lStructSize = sizeof(openFileDialog); 
+	openFileDialog.lpstrFilter = "Bitmap Files (*.bmp)\0*.bmp\0All Files (*.*)\0*.*\0";
+	openFileDialog.lpstrFile = fileName;
+	openFileDialog.nMaxFile = MAX_PATH;
+	openFileDialog.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	openFileDialog.lpstrDefExt = "bmp";
+		
+	if(!GetOpenFileName(&openFileDialog)){
+		return 1;
+	}
+	
+	loadScaledBmpSpecific(fileName);
+	
+}
+
+bool View::loadScaledBmpSpecific(string fileNameStr) {
+	// Using the reference http://www.winprog.org/tutorial/app_two.html
+	char fileName[MAX_PATH] = "";
+	
+	strcpy(fileName, fileNameStr.c_str());
+	if (verbose) cout << "View::loadScaledBmpSpecific: Loading Specified File: \"" << fileName << "\"\n";
+
+	// Using the reference http://www.dreamincode.net/forums/topic/26936-how-to-make-sense-of-the-bmp-format/
+	
+	HANDLE f; 
+	f = CreateFile(fileName,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+
+	BITMAPFILEHEADER bmpFileHeader;
+	BITMAPINFOHEADER bmpInfoHeader;
+	RGBTRIPLE *inputImage;
+	DWORD count;
+
+	ReadFile(f, &bmpFileHeader, sizeof(bmpFileHeader), &count, NULL);
+	ReadFile(f, &bmpInfoHeader, sizeof(bmpInfoHeader), &count, NULL);
+	
+	inputImage = new RGBTRIPLE[bmpInfoHeader.biWidth*bmpInfoHeader.biHeight];		
+    	ReadFile(f, inputImage, sizeof(RGBTRIPLE)*bmpInfoHeader.biWidth*bmpInfoHeader.biHeight, &count,NULL);
+    	
+    	CloseHandle(f);
+    	    	
+    	pxGrpSize = floor(double(1920)/bmpInfoHeader.biWidth);
+	if (verbose) cout << "View::loadScaledBmpSpecific: Setting PxGrpSize to: \"" << pxGrpSize << "\"\n";							
+	::Xres = int(1920/pxGrpSize);
+	::Yres = int(1080/pxGrpSize);
+	resize(int(pxGrpSize));
+	if (showDisplay){
+		SDL_SetWindowSize(wDisp, Xres, Yres);
+		SDL_DestroyRenderer(rDisp);
+		rDisp = SDL_CreateRenderer(wDisp, -1, 0);
+	}
+	
+	double greyscale = (pxGrpSize*pxGrpSize)/double(255);	
+    	if (verbose) cout << "View::loadScaledBmpSpecific: Greyscale Scaler to: \"" << greyscale << "\"\n";	
+    	for(int x=0; x<bmpInfoHeader.biWidth; x++){
+		for(int y=0; y<bmpInfoHeader.biHeight; y++){
+			groups[x][y].setValue((floor((inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue * greyscale) + 0.5)));
+		//	setPix(x,y,int(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255));
+			
+		}
+	}
+	
+	for (int x=0; x<Xres; x++){
+		for (int y=0; y<Yres; y++){	
+			groups[x][y].checkValue();
+		}
+	}
+}
