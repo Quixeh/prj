@@ -61,6 +61,8 @@ class View {
 		bool outputToBmpFull();
 		bool loadBmp();
 		bool loadBmpSpecific(string);
+		bool loadScaledBmp();
+		bool loadScaledBmpSpecific(string);
 		void checkValue();
 		
 };
