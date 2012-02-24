@@ -48,6 +48,11 @@
 */
 #include <sstream>
 
+/* iomanip
+* Allows us to manipulate the output stream
+*/
+#include <iomanip>
+
 /* vector
 * Dynamicly sized arrays
 */

@@ -649,7 +649,7 @@ bool AlpDMD::outputDynSeqSpecific(string pathStr, int mode){
 	for (int i = 0; i<count +1; i++){
 		
 		double percent = (i*100)/double(count+1);
-		cout << "Loading: " << setprecision (3) <<  percent << "%\r";
+		cout << "Loading: " << setprecision(3) <<  percent << "%\r";
 		filePath = "";
 		filePath += path;
 		filePath += "\\";
