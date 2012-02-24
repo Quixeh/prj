@@ -12,7 +12,7 @@
 * the pixels are grouped into 'PxGrp' classes. These deal with the individual 
 * mirrors on the DMD. 
 *
-* @author Andy Blackmore <axb803@bham.ac.uk> <quixeh@gmail.com> //
+* @author Andy Blackmore <axb803@bham.ac.uk> <quixeh@gmail.com> ////
 *
 */
 

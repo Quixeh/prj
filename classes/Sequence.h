@@ -87,7 +87,7 @@ void Sequence::load(){
 	TCHAR path[MAX_PATH];
 	string pathStr;
     	BROWSEINFO browseInfo = {0};
-   	browseInfo.lpszTitle = ("Please located the saved sequence folder...");
+   	browseInfo.lpszTitle = ("Please locate the saved sequence folder...");
 	LPITEMIDLIST dataList = SHBrowseForFolder (&browseInfo);
 	    	
 	if (dataList != 0){

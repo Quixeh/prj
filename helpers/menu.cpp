@@ -346,6 +346,41 @@ int menu(void* unused){
 								seq.load();
 							}	
 						} 
+						else if (commandList[1] == "dynamic"){
+							#ifdef useDMD
+							if (commandList.size() >= 3){
+								if (commandList.size() >= 4){
+									if (commandList[2] == "swtrig"){
+										cout << "Preparing Alp (Software Trigger Mode)\n";
+										dmd.outputDynSeqSpecific(commandList[3],1);
+									}
+									else if (commandList[2] == "hwtrig"){
+										cout << "Preparing Alp (Hardware Trigger Mode)\n";
+										dmd.outputDynSeqSpecific(commandList[3],2);
+									} 
+									else {	
+										cout << "Error - Please check your Syntax.\n";
+									}
+								} 
+								else { 
+									if (commandList[2] == "swtrig"){
+										cout << "Preparing Alp (Software Trigger Mode)\n";
+										dmd.outputDynSeq(1);	
+									}
+									else if (commandList[2] == "hwtrig"){
+										cout << "Preparing Alp (Hardware Trigger Mode)\n";
+										dmd.outputDynSeq(2);
+									} 
+									else {	
+										dmd.outputDynSeqSpecific(commandList[2],0);
+									}
+								}					
+									
+							} else {
+								dmd.outputDynSeq(0);
+							}
+							#endif
+						}
 						else if (commandList[1] == "display"){
 							seq.play();
 						}

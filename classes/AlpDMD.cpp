@@ -280,7 +280,7 @@ void AlpDMD::quit(){
 bool AlpDMD::outputView(View view, int mode){
 	
 	if (verbose) cout << "AlpDMD::outputView: Placing a single frame on the device" << endl;
-	
+	AlpDevHalt(deviceID);
 	ALP_ID sequenceID;  // Variable to hold this current Sequences' ID. 
 	UCHAR *transmitImages = NULL; // Variables to hold the data to transmit. 
 	transmitImages = new UCHAR[(1920*1080)];
@@ -436,7 +436,7 @@ bool AlpDMD::outputView(View view, int mode){
 bool AlpDMD::outputSeq(Sequence seq, int mode){
 	if (verbose) cout << "AlpDMD::outputSeq: Placing a single frame on the device" << endl;
 	ALP_ID sequenceID;
-	
+	AlpDevHalt(deviceID);
 	// This variable needs to be bigger as we have more than one image. 
 	UCHAR *transmitImages = NULL; 
 	transmitImages = new UCHAR[(1920*1080)*seq.getSize()];
@@ -569,5 +569,197 @@ bool AlpDMD::outputSeq(Sequence seq, int mode){
 	
 	return 0;
 } 
+
+
+//***************************************************************************
+bool AlpDMD::outputDynSeq(int mode){
+	TCHAR path[MAX_PATH];
+	string pathStr;
+    	BROWSEINFO browseInfo = {0};
+   	browseInfo.lpszTitle = ("Please locate the saved sequence folder...");
+	LPITEMIDLIST dataList = SHBrowseForFolder (&browseInfo);
+	    	
+	if (dataList != 0){
+		SHGetPathFromIDList (dataList, path);
+		pathStr = path;
+		if (verbose) cout << "AlpDMD::outputDynSeq: Path Selected: " << pathStr << endl;
+	} else {
+		if (verbose) cout << "AlpDMD::outputDynSeq: Canceled Dialoge/Invalid Directory\n";
+		return 0;
+	}
+	
+	outputDynSeqSpecific(pathStr, mode);
+}
+
+
+bool AlpDMD::outputDynSeqSpecific(string pathStr, int mode){
+	
+	ALP_ID sequenceID;
+	View viewDyn(pxGrpSize);
+	UINT count = 0;
+	bool working = true;
+	string buff, path, filePath;
+	string fileName[1000];
+	int viewSize = int(pxGrpSize);
+		
+	WIN32_FIND_DATA image;
+	path = pathStr;
+	pathStr.append("/*.bmp");
+	if (verbose) cout << "Sequence::outputDynSeqSpecific: Searching for: " << pathStr << endl;
+	
+	HANDLE handle = FindFirstFile(pathStr.c_str(),&image);
+	
+	if(handle != INVALID_HANDLE_VALUE){
+	       
+	       buff = image.cFileName;
+	       fileName[count] = buff;
+	       if (verbose) cout << "Sequence::outputDynSeqSpecific: Found " << count << " " <<  buff << endl;
+	       
+	       while(working){
+			
+			FindNextFile(handle, &image);
+			
+			if(image.cFileName != buff){
+				buff = image.cFileName;
+				
+				++count;
+				fileName[count] = buff;        
+				if (verbose) cout << "Sequence::outputDynSeqSpecific: Found " << count << " " <<  buff << endl;
+		      	} else {
+				//end of files reached
+				working = false;
+	              	}
+	       	}
+	       	
+	}
+	
+	if (verbose) cout << "AlpDMD::outputDynSeqSpecific: Allocating Sequence of size " << count + 1<< endl;
+				
+		// Sequence consists of more than one image, remember to allocate the correct size. 
+		state = AlpSeqAlloc(deviceID, 1, count+1, &sequenceID);
+				
+		if (ALP_OK != state){			
+			cout << "AlpDMD::outputDynSeqSpecific: Error 1 - Unable to Allocate Sequence. " << state << endl;
+			return 1;
+		}
+	
+	UCHAR *transmitImages = NULL; 
+	transmitImages = new UCHAR[(1920*1080)];
+
+	for (int i = 0; i<count +1; i++){
+		
+		double percent = (i*100)/double(count+1);
+		cout << "Loading: " << setprecision (3) <<  percent << "%\r";
+		filePath = "";
+		filePath += path;
+		filePath += "\\";
+		filePath += fileName[i];
+		if (verbose) cout << "AlpDMD::outputDynSeqSpecific: Loading: " << filePath << endl;
+		viewDyn.loadScaledBmpSpecific(filePath);
+		
+					
+		if (verbose) cout << "AlpDMD::outputDynSeqSpecific: Getting Pixels" << endl;
+		
+		for (int x=0; x<1920; x++){
+			for (int y=0; y<1080; y++){ // Use n to place the data in the correct place.
+				if (viewDyn.getPix(x,y) == 1){  
+					FillMemory( transmitImages+x+(y*1920), 1, 0x00);
+				} else {
+					FillMemory( transmitImages+x+(y*1920), 1, 0x80);
+				}
+			}
+		}
+		
+			
+			
+		state = AlpSeqPut(deviceID, sequenceID, i, 1, transmitImages); // As above
+		
+		if (ALP_OK != state){
+			cout << "AlpDMD::outputDynSeqSpecific: Error 2 - Unable to Transmit Sequence. " << state << endl;
+			return 1;
+		}
+			
+		if (verbose) cout << "AlpDMD::outputDynSeqSpecific: Freeing Memory" << endl;
+		
+			
+				
+	}
+	
+	cout << "Loading: 100.00%" << endl;
+	free(transmitImages);
+	if (verbose) cout << "AlpDMD::outputDynSeqSpecific: Changing Device to Uninterrupted Mode" << endl;
+	
+	state = AlpSeqControl(deviceID, sequenceID, ALP_BIN_MODE, ALP_BIN_UNINTERRUPTED); 
+	
+	if (ALP_OK != state){
+		cout << "AlpDMD::outputDynSeqSpecific: Error 3 - Unable to Request Uninterrupted mode. " << state << endl;
+		return 1;
+	}
+	
+	if (verbose) cout << "AlpDMD::outputDynSeqSpecific: Setting up timings" << endl;
+	
+	state = AlpSeqTiming(deviceID, sequenceID, ALP_DEFAULT, pictureTime, ALP_DEFAULT, ALP_DEFAULT, ALP_DEFAULT);
+	
+	if (ALP_OK != state){
+		cout << "AlpDMD::outputDynSeqSpecific: Error 4 - Unable to Set to the desired timing settings." 
+		<< "See \"help timings\" for details. " << state << endl;
+		return 1;
+	}
+	
+	switch(mode){
+		case 2: // Hardware Trigger Mode
+		
+			if (verbose) cout << "AlpDMD::outputDynSeqSpecific: Requesting Trigger Mode." << endl;
+
+			state = AlpDevControl(deviceID, ALP_VD_EDGE, ALP_DEFAULT);
+			
+			if (ALP_OK != state){
+				cout << "AlpDMD::outputDynSeqSpecific: Error 5 - Device Rejected Trigger mode change. " << state << endl;
+				return 1;
+			}
+			
+			state = AlpProjControl(deviceID, ALP_PROJ_MODE, ALP_SLAVE_VD);
+			
+			if (ALP_OK != state){
+				cout << "AlpDMD::outputDynSeqSpecific: Error 6 - Projection Rejected Trigger mode change. " << state << endl;
+				return 1;
+			}
+			
+			if (verbose) cout << "AlpDMD::outputDynSeqSpecific: Starting Projection" << endl;
+
+			state = AlpProjStartCont(deviceID, sequenceID);
+			
+			if (ALP_OK != state){
+				cout << "AlpDMD::outputDynSeqSpecific: Error 7 - Unable to begin projection. " << state << endl;
+				return 1;
+			}
+			
+			cout << "Hardware Trigger Mode. Type \"dmd stop\" to end projection.\n";	
+						
+			return 0;
+			break;
+			
+		case 1: // Software Trigger
+			cout << "Press any key to trigger projection...\n";
+			do {_getch();} while (_kbhit());
+			cout <<  "Type \"dmd stop\" to end projection.\n";
+			break;
+			
+		case 0: // Project as soon as ready... 
+		default:
+			break;
+	}
+	
+	if (verbose) cout << "AlpDMD::outputDynSeqSpecific: Starting Projection" << endl;
+
+	state = AlpProjStartCont(deviceID, sequenceID);
+	
+	if (ALP_OK != state){
+		cout << "AlpDMD::outputDynSeqSpecific: Error 10 - Unable to begin projection." << endl;
+		return 1;
+	}
+	
+	return 0;
+}
 
 

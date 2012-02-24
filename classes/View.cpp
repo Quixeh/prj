@@ -555,11 +555,11 @@ bool View::loadBmp() {
     	
     	for(int x=0; x<1920; x++){
 		for(int y=0; y<1080; y++){
-			setPix(x,y,int(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255));
+			setPix(x,y,int(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtGreen))/(float) 255));
 			
 		}
 	}
-	
+	free(inputImage);
 	for (int x=0; x<Xres; x++){
 		for (int y=0; y<Yres; y++){	
 			groups[x][y].checkValue();
@@ -594,11 +594,11 @@ bool View::loadBmpSpecific(string fileNameStr) {
     	
     	for(int x=0; x<1920; x++){
 		for(int y=0; y<1080; y++){
-			setPix(x,y,int(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255));
+			setPix(x,y,int(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtGreen))/(float) 255));
 			
 		}
 	}
-	
+	free(inputImage);
 	for (int x=0; x<Xres; x++){
 		for (int y=0; y<Yres; y++){	
 			groups[x][y].checkValue();
@@ -624,6 +624,7 @@ bool View::loadScaledBmp(){
 	}
 	
 	loadScaledBmpSpecific(fileName);
+	
 	
 }
 
@@ -652,30 +653,49 @@ bool View::loadScaledBmpSpecific(string fileNameStr) {
     	
     	CloseHandle(f);
     	    	
-    	pxGrpSize = floor(double(1920)/bmpInfoHeader.biWidth);
-	if (verbose) cout << "View::loadScaledBmpSpecific: Setting PxGrpSize to: \"" << pxGrpSize << "\"\n";							
-	::Xres = int(1920/pxGrpSize);
-	::Yres = int(1080/pxGrpSize);
-	resize(int(pxGrpSize));
-	if (showDisplay){
-		SDL_SetWindowSize(wDisp, Xres, Yres);
-		SDL_DestroyRenderer(rDisp);
-		rDisp = SDL_CreateRenderer(wDisp, -1, 0);
+    	if (floor(double(1920)/bmpInfoHeader.biWidth) != pxGrpSize){
+	    	pxGrpSize = floor(double(1920)/bmpInfoHeader.biWidth);
+	    	while((pxGrpSize*bmpInfoHeader.biHeight) > 1080){
+			pxGrpSize--;
+			if ((pxGrpSize*bmpInfoHeader.biHeight) > 1080){
+				cout << "View::loadScaledBmpSpecific: Error 1 - Image is unsuitable for scaled import." << endl;
+				return 0;
+			}
+		}
+		if (verbose) cout << "View::loadScaledBmpSpecific: Setting PxGrpSize to: \"" << pxGrpSize << "\"\n";							
+		::Xres = int(1920/pxGrpSize);
+		::Yres = int(1080/pxGrpSize);
+		resize(int(pxGrpSize));
+		if (showDisplay){
+			SDL_SetWindowSize(wDisp, Xres, Yres);
+			SDL_DestroyRenderer(rDisp);
+			rDisp = SDL_CreateRenderer(wDisp, -1, 0);
+		}
 	}
 	
+	
+	
 	double greyscale = (pxGrpSize*pxGrpSize)/double(255);	
-    	if (verbose) cout << "View::loadScaledBmpSpecific: Greyscale Scaler to: \"" << greyscale << "\"\n";	
+    	
+	if (verbose) cout << "View::loadScaledBmpSpecific: Greyscale Scaler to: \"" << greyscale << "\"\n";	
+    
     	for(int x=0; x<bmpInfoHeader.biWidth; x++){
 		for(int y=0; y<bmpInfoHeader.biHeight; y++){
-			groups[x][y].setValue((floor((inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue * greyscale) + 0.5)));
+			double luminosity = 0.299 * inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtRed;
+			luminosity = luminosity + (0.587 *inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtGreen);
+			luminosity = luminosity + (0.114 *inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue);
+			groups[x][y].setValue((floor((luminosity * greyscale) + 0.5)));
 		//	setPix(x,y,int(int(((int) inputImage[(bmpInfoHeader.biHeight-1-y)*bmpInfoHeader.biWidth+x].rgbtBlue))/(float) 255));
 			
 		}
 	}
+	
+	free(inputImage);
 	
 	for (int x=0; x<Xres; x++){
 		for (int y=0; y<Yres; y++){	
 			groups[x][y].checkValue();
 		}
 	}
+	
 }
