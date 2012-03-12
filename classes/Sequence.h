@@ -181,4 +181,4 @@ void Sequence::loadSpecific(string pathStr){
 	}
 }
 	
-
+// EOF

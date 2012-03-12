@@ -50,3 +50,5 @@ bool close = false; // Menu Variable - Not editable.
 // control the DMD. This is useful for testing on a PC that does not have the
 // Cryptobox software installed. 
 #define useDMD = TRUE 
+
+// EOF

@@ -20,19 +20,19 @@
 #include "helpers/includes.h"
 
 // Namespace
-
 using namespace std;
 
+// Global Vars
 int viewSize = int(pxGrpSize);
 View view(viewSize);
 Sequence seq;
 
-
+// If using the DMD:
 #ifdef useDMD
 AlpDMD dmd;
 #endif
 
-// Last but not least, include the menu function. 
+// Include the menu function. 
 #include "helpers/menu.cpp"
 
 
@@ -207,24 +207,23 @@ int main(int argc, char* argv[]){
 	
 // End the program
 	/*
-	* Mummy always said that you need to clear up your toys after you play 
-	* with them. SDL is no different! So, we close whichever of our windows
+	* SDL needs to be cleaned after use! So, we close whichever of our windows
 	* that we've opened up, then destroy the renderers for each. Then we use
 	* the command SDL_Quit which will clean up everything on SDL's side of things.  
 	*/
 	
 	if (showCtrl) { 
-		SDL_DestroyRenderer(rCtrl);
+		SDL_DestroyRenderer(rCtrl); // Control Window, if used. 
 		SDL_DestroyWindow(wCtrl);
 	}
 	
 	if (showDisplay) { 
-		SDL_DestroyRenderer(rDisp);
+		SDL_DestroyRenderer(rDisp); // Display Window, if used. 
 		SDL_DestroyWindow(wDisp);
 	}
 	
 	if (showFullSize) {
-		SDL_DestroyRenderer(rDispFull);
+		SDL_DestroyRenderer(rDispFull); // Fullsize Window, if used. 
 		SDL_DestroyWindow(wDispFull);
 	}
 	
@@ -238,3 +237,5 @@ int main(int argc, char* argv[]){
 	exit(0);
 	return 0;    
 }
+
+// EOF

@@ -44,6 +44,7 @@
 #include <time.h>
 
 /* sstream
+
 * Allows us to use string streams 
 */
 #include <sstream>
@@ -117,3 +118,5 @@
 #ifdef useDMD
 #include "../classes/AlpDMD.cpp"
 #endif
+
+// EOF

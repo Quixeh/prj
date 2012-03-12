@@ -27,7 +27,8 @@ class AlpDMD {
 		long inquire(int);             // Inquire Device settings
 		bool outputView(View, int);    // Output a single Image
 		bool outputSeq(Sequence, int); // Output a sequence of images. 
-		bool outputDynSeq(int);
-		bool outputDynSeqSpecific(string, int);
+		bool outputDynSeq(int);        // Output a sequence directly to SLM
+		bool outputDynSeqSpecific(string, int); // As above, but specified. 
 };
 
+// EOF
