@@ -1,36 +1,45 @@
+/** Sequence Class
+* Controls the Sequence Object in the program.
+*
+* Methods defined below.
+*
+* @author Andy Blackmore <axb803@bham.ac.uk>
+*/
+
 #include <vector>
 
 using namespace std;
 
+// Class Definition 
+
 class Sequence {
-	private:
-		double timing;
-	public:
-		vector<View> frames;
-		Sequence();
-		int getSize();
-		void setSize(int);
-		int getTiming();
-		void updateTiming();
-		void assignFrame(int, View);
-		void addFrame(View);
-		void insertFrame(int, View);
-		bool removeFrame(int);
-		void load();
-		void loadSpecific(string);
-		void play();
-		void clear();
+	private: // Functions and vars usable only by the class
+		double timing;  // Intended refresh rate of this sequence.
+	public:  // Functions and vars usable by any external object
+		vector<View> frames; // Var to hold all the views. 
+		Sequence();	     // Constructor
+		int getSize();       // Returns the number of frames in the sequence
+		void setSize(int);   // Allocate space for this many frames (unused)
+		int getTiming();     // Return the indended timings
+		void updateTiming(); // Update timings from settings
+		void assignFrame(int, View); // Overwrite a frame
+		void addFrame(View); // Add a new frame on the end
+		bool removeFrame(int); // Remove a specified frame
+		void load();         // Load a folder as a sequence
+		void loadSpecific(string); // Load a specific folder.
+		void play();         // Display the sequence on the SDL windows
+		void clear();        // Delete the sequence
 };
 
 Sequence::Sequence (){ // Constructor
-	updateTiming();
+	updateTiming(); // Update the timings from program settings
 }
 
-int Sequence::getSize(){
+int Sequence::getSize(){ // Returns the number of frames in the sequence
 	return frames.size();
 }
 
-void Sequence::setSize(int sSize) {
+void Sequence::setSize(int sSize) { // Allocate space for this many frames (unused)
 	if (sSize > frames.size()){
 		frames.reserve(sSize);
 	} else {
@@ -38,73 +47,72 @@ void Sequence::setSize(int sSize) {
 	}
 }
 
-int Sequence::getTiming(){
+int Sequence::getTiming(){  // Return the indended timings
 	return int(timing);
 }
 
-void Sequence::updateTiming() {
+void Sequence::updateTiming() {  // Update timings from settings
 	timing = int(pictureTime/1000);
 }
 
-void Sequence::assignFrame(int frame, View view){
+void Sequence::assignFrame(int frame, View view){ // Overwrite a frame
 	frames[frame] = view;
 }
 
-void Sequence::addFrame(View view){
-	int viewSize = int(pxGrpSize);
+void Sequence::addFrame(View view){ // Add a frame
+	int viewSize = int(pxGrpSize); // Create a tempory view. 
 	View temp(viewSize);
-	for (int x = 0; x<1920; x++){
+	for (int x = 0; x<1920; x++){ // Copy the new frame into the temp view
 		for (int y = 0; y<1080; y++){
 			temp.setPix(x,y, view.getPix(x,y));
 		}
 	}
 	
-	temp.checkValue();
+	temp.checkValue(); // Check itself
 	
-	frames.push_back(temp);
+	frames.push_back(temp); // Add to the frames data
 }
 
-void Sequence::insertFrame(int frame, View view){
-//	frames.insert(frame, view);
-}
-
-bool Sequence::removeFrame(int frame){
+bool Sequence::removeFrame(int frame){ // Remove a specified frame
 	frames.erase(frames.begin()+frame);	
 }
 
-void Sequence::clear(){
+void Sequence::clear(){ // Delete the sequence
 	frames.clear();	
 }
 
-void Sequence::play(){
+void Sequence::play(){ // Display the sequence on the SDL windows
 	for(int i=0; i<frames.size(); i++){
-		frames[i].output();
-		Sleep(DWORD(timing));
+		frames[i].output(); // Output each view...
+		Sleep(DWORD(timing)); // Wait until the next image should show
 	}
 }
 
-void Sequence::load(){
+void Sequence::load(){ // Load a sequence from a folder of images. 
+	
+	// Create the Browse folders window
 	TCHAR path[MAX_PATH];
 	string pathStr;
     	BROWSEINFO browseInfo = {0};
    	browseInfo.lpszTitle = ("Please locate the saved sequence folder...");
 	LPITEMIDLIST dataList = SHBrowseForFolder (&browseInfo);
 	    	
+	// If there is something in the folder and all is ok...    	
 	if (dataList != 0){
 		SHGetPathFromIDList (dataList, path);
 		pathStr = path;
 		if (verbose) cout << "Sequence::load: Path Selected: " << pathStr << endl;
-	} else {
+	} else { // Otherwise...
 		if (verbose) cout << "Sequence::load: Canceled Dialoge/Invalid Directory\n";
 		return;
 	}
 	
-	loadSpecific(pathStr);
+	loadSpecific(pathStr); // Load this specified folder. 
 }
 
 
 
-void Sequence::loadSpecific(string pathStr){
+void Sequence::loadSpecific(string pathStr){ // Load a sequence from a specified folder of images. 
 	
 // Using the reference: http://tomtech999.wordpress.com/2008/07/30/listing-files-in-a-directory-in-c/
 	
@@ -113,64 +121,65 @@ void Sequence::loadSpecific(string pathStr){
 	string buff, path, filePath;
 	string fileName[1000];
 	int viewSize = int(pxGrpSize);
-	View loadView(viewSize);
+	View loadView(viewSize); // Create the tempory view to work with.
 	
-	WIN32_FIND_DATA image;
+	WIN32_FIND_DATA image; // Find all the .bmp files in the folder
 	path = pathStr;
 	pathStr.append("/*.bmp");
 	if (verbose) cout << "Sequence::loadSpecific: Searching for: " << pathStr << endl;
 	
+	// Find the first file...
 	HANDLE handle = FindFirstFile(pathStr.c_str(),&image);
 	
-	if(handle != INVALID_HANDLE_VALUE){
+	if(handle != INVALID_HANDLE_VALUE){ // If we find a file.
 		
 	       buff = image.cFileName;
-	       fileName[count] = buff;
+	       fileName[count] = buff; // Add the filename to the list of found files. 
 	       if (verbose) cout << "Sequence::loadSpecific: Found " << buff << endl;
-	       filePath = "";
+	       filePath = ""; // Prepare the full path to the file.
 	       filePath += path;
 	       filePath += "\\";
 	       filePath += buff;
 	       	       
-	       switch (imgMode){
-			case 2:
+	       switch (imgMode){ // Load These images using scaled or 1:1?
+			case 2: // Scaled
 				loadView.loadScaledBmpSpecific(filePath);
 				break;
-			case 1:
+			case 1: // 1:1
 			default:
 				loadView.loadBmpSpecific(filePath);
 				break;
 		}		
 				
-	       addFrame(loadView);
+	       addFrame(loadView); // Add this frame to the Sequence
 	
-	       while(working){
+	       while(working){ // Repeat for all the rest. 
 			
-			FindNextFile(handle, &image);
+			FindNextFile(handle, &image); // Find the next file
 			
 			if(image.cFileName != buff){
 				
 				buff = image.cFileName;
 				++count;
-				fileName[count] = buff;
+				fileName[count] = buff; // Add the filename to the list of found files. 
 				if (verbose) cout << "Sequence::loadSpecific: Found " << buff << endl;
 				
-				filePath = "";
+				filePath = ""; // Prepare the full path to the file.
 				filePath += path;
 				filePath += "\\";
 				filePath += buff;
 				
-				switch (imgMode){
-					case 2:
+				switch (imgMode){ // Load These images using scaled or 1:1?
+					case 2: // Scaled
 						loadView.loadScaledBmpSpecific(filePath);
 						break;
-					case 1:
+					case 1: // 1:1
 					default:
 						loadView.loadBmpSpecific(filePath);
 						break;
 				}		
 				
-				addFrame(loadView);
+				addFrame(loadView); // Add this frame to the Sequence
 	              
 		      } else {
 				//end of files reached

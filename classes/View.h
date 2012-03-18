@@ -7,7 +7,6 @@
 * @author Andy Blackmore <axb803@bham.ac.uk>
 */
 
-
 #include <cmath>
 #include <fstream>
 #include <string>
@@ -16,6 +15,7 @@ using namespace std;
 
 // Useful Structures for Binary files. 
 // These were taken from the same source as the Bitmap Output Code.
+// Using the reference: http://www.cplusplus.com/forum/beginner/23177/
 
 struct lwrite {  // Declare the structure
 	unsigned long value; // Internal Vars
@@ -36,7 +36,6 @@ inline std::ostream& operator << ( std::ostream& outs, const lwrite& v ){
 }
 
 // Class Definition
-
 class View { 
 	private: // Functions and vars usable only by the class
 		int pxSize, Xres, Yres; // Dimensions of the pixel groups and the view

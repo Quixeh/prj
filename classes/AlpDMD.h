@@ -8,7 +8,7 @@
 
 using namespace std;
 
-// Class Definition
+// Class Definition 
 
 class AlpDMD {
 	private:  // Functions and vars usable only by the class

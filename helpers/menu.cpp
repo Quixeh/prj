@@ -127,7 +127,7 @@ int menu(void* unused){
 				view.invert();
 			}
 			else {  // At this point, the command probably includes more than one word.
-		
+				// The remainder is self-explanitory, but some somments will be interjected. 
 				vector<string> commandList;
 							
 				char * commands;
@@ -137,10 +137,12 @@ int menu(void* unused){
 				    commands = strtok (NULL, " ");
 				}
 			
-			//	for (int i=0;i<commandList.size();i++)
-			//		cout << i << ": " << commandList[i] << ".\n";
-					
-				if (commandList[0] == "apply"){
+				/* If I type a command, it corresponds to command list in the following way:
+				* set output bitmap on 123456
+				*  0    1     2     3   4 
+				*/ 
+			
+				if (commandList[0] == "apply"){ 
 					if (commandList.size() >= 2){
 						if (commandList[1] == "xgrad"){
 							view.applyXfn(1);
@@ -152,6 +154,7 @@ int menu(void* unused){
 							view.applyXfn(2);
 						}
 						else if (commandList[1] == "sinx"){
+							// Atoi converts a string to a number. 
 							view.applySinxfn(atoi(commandList[2].c_str()));
 						}
 						else if (commandList[1] == "sqx"){
@@ -168,7 +171,7 @@ int menu(void* unused){
 							view.invert();
 						}
 						else if (commandList[1] == "random"){
-							if (commandList.size() >= 3){
+							if (commandList.size() >= 3){ // If we're given a number, use it. 
 								view.randomise(atoi(commandList[2].c_str()));
 							} else {
 								view.randomise((double) rand() / (RAND_MAX+1));
@@ -202,7 +205,7 @@ int menu(void* unused){
 				else if (commandList[0] == "set"){
 					if (commandList.size() >= 2){
 						if (commandList[1] == "size"){
-							if (commandList.size() > 2){
+							if (commandList.size() > 2){ // Resize the View!
 								pxGrpSize = atoi(commandList[2].c_str());
 								
 								Xres = int(1920/pxGrpSize);
@@ -536,3 +539,4 @@ int menu(void* unused){
 		}
 	}
 }
+// EOF
